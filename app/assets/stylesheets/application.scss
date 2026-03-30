@@ -1,1 +1,22 @@
-// Sassy
+// ── Death Bloom Coffee Roasters — Main Stylesheet ────────────────────────────
+// Import order matters: tokens → reset → base → layout → components
+
+// Base
+@use "base/tokens";
+@use "base/reset";
+@use "base/typography";
+
+// Layout
+@use "layout/container";
+@use "layout/nav";
+@use "layout/footer";
+
+// Components
+@use "components/buttons";
+@use "components/flash";
+@use "components/hero";
+@use "components/featured";
+@use "components/catalog";
+@use "components/product_card";
+@use "components/product_detail";
+@use "components/announcement_bar";

@@ -1,0 +1,27 @@
+// ── Typography ───────────────────────────────────────────────────────────────
+
+// Section labels — uppercase, tracked, small
+.section-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--ls-wider);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+// Section headings
+.section-heading {
+  font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-3xl));
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-tight);
+  margin-bottom: var(--space-8);
+}
+
+// Monospace detail text — weights, dates, metadata
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  letter-spacing: var(--ls-normal);
+}

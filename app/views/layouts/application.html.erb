@@ -20,6 +20,10 @@
   </head>
 
   <body>
+    <% if Flipper.enabled?(:announcement_bar) %>
+      <%= render "shared/announcement_bar" %>
+    <% end %>
+
     <%= render "shared/nav" %>
 
     <% if notice.present? %>

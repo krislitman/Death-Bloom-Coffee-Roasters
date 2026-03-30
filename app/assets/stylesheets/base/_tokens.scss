@@ -1,0 +1,88 @@
+// ── Design Tokens ────────────────────────────────────────────────────────────
+// All values are CSS custom properties so runtime zone-switching works without
+// SCSS recompilation.  Dark zone is the default; light zone overrides via
+// .zone--light scoped to a section or wrapper.
+
+:root {
+  // Colors — dark zone defaults
+  --color-bg:           #0a0a0a;
+  --color-bg-surface:   #141414;
+  --color-text-primary: #f0ece4;
+  --color-text-muted:   #7a7670;
+  --color-accent:       #c8a96e;   // warm gold — refine from brand assets
+  --color-border:       #2a2a2a;
+  --color-error:        #e05252;
+  --color-success:      #5ca87a;
+
+  // Nav
+  --nav-height: 64px;
+
+  // Typography scale — modular scale ×1.25 from 1rem base
+  --font-size-xs:      0.64rem;   //  ~10px
+  --font-size-sm:      0.8rem;    //  ~13px
+  --font-size-base:    1rem;      //  ~16px
+  --font-size-md:      1.25rem;   //  ~20px
+  --font-size-lg:      1.563rem;  //  ~25px
+  --font-size-xl:      1.953rem;  //  ~31px
+  --font-size-2xl:     2.441rem;  //  ~39px
+  --font-size-3xl:     3.052rem;  //  ~49px
+  --font-size-display: 5rem;      //  ~80px — hero headings
+
+  // Font families
+  --font-sans:  "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:  "JetBrains Mono", "Courier New", monospace;
+
+  // Font weights
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-bold:    700;
+
+  // Letter spacing
+  --ls-tight:  -0.02em;
+  --ls-normal:  0;
+  --ls-wide:    0.08em;
+  --ls-wider:   0.15em;
+
+  // Line heights
+  --lh-tight:   1.1;
+  --lh-snug:    1.35;
+  --lh-normal:  1.6;
+
+  // Spacing — 4px base unit
+  --space-1:   0.25rem;   //  4px
+  --space-2:   0.5rem;    //  8px
+  --space-3:   0.75rem;   // 12px
+  --space-4:   1rem;      // 16px
+  --space-5:   1.5rem;    // 24px
+  --space-6:   2rem;      // 32px
+  --space-8:   3rem;      // 48px
+  --space-10:  4rem;      // 64px
+  --space-12:  5rem;      // 80px
+  --space-16:  7.2rem;    // ~115px — row gutters (Sweet Bloom reference)
+  --space-20:  9rem;      // 144px
+
+  // Layout
+  --container-max:  1440px;
+  --container-pad:  clamp(1.25rem, 4vw, 3rem);
+  --grid-cols:      4;
+  --grid-gap:       clamp(1rem, 2vw, 2rem);
+
+  // Transitions
+  --transition-fast:   150ms ease;
+  --transition-base:   300ms ease;
+  --transition-slow:   500ms ease;
+
+  // Radius
+  --radius-sm:  3px;
+  --radius-md:  6px;
+  --radius-lg:  12px;
+}
+
+// ── Light zone overrides ──────────────────────────────────────────────────────
+.zone--light {
+  --color-bg:           #f5f2ed;
+  --color-bg-surface:   #ffffff;
+  --color-text-primary: #0a0a0a;
+  --color-text-muted:   #5a5652;
+  --color-border:       #e0ddd8;
+}

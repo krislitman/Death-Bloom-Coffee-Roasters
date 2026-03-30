@@ -10,9 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_30_030745) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_30_033550) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "cart_items", force: :cascade do |t|
+    t.bigint "cart_id", null: false
+    t.bigint "coffee_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "quantity", default: 1, null: false
+    t.datetime "updated_at", null: false
+    t.index ["cart_id", "coffee_id"], name: "index_cart_items_on_cart_id_and_coffee_id", unique: true
+    t.index ["cart_id"], name: "index_cart_items_on_cart_id"
+    t.index ["coffee_id"], name: "index_cart_items_on_coffee_id"
+  end
+
+  create_table "carts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "session_token"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["session_token"], name: "index_carts_on_session_token", unique: true
+    t.index ["user_id"], name: "index_carts_on_user_id"
+  end
 
   create_table "coffee_tasting_notes", force: :cascade do |t|
     t.bigint "coffee_id", null: false
@@ -101,6 +121,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_030745) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "cart_items", "carts"
+  add_foreign_key "cart_items", "coffees"
+  add_foreign_key "carts", "users"
   add_foreign_key "coffee_tasting_notes", "coffees"
   add_foreign_key "coffee_tasting_notes", "tasting_notes"
   add_foreign_key "payment_profiles", "users"

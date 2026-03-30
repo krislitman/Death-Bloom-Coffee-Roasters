@@ -1,0 +1,18 @@
+// ── Flash Messages ───────────────────────────────────────────────────────────
+
+.flash {
+  padding: var(--space-3) var(--container-pad);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  letter-spacing: var(--ls-wide);
+}
+
+.flash--notice {
+  background-color: var(--color-success);
+  color: #fff;
+}
+
+.flash--alert {
+  background-color: var(--color-error);
+  color: #fff;
+}

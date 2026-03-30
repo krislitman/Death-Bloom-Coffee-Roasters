@@ -1,0 +1,35 @@
+// ── Hero Section ─────────────────────────────────────────────────────────────
+
+.hero {
+  min-height: calc(100svh - var(--nav-height));
+  display: flex;
+  align-items: center;
+  padding-block: var(--space-16);
+  background-color: var(--color-bg);
+}
+
+.hero__inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  width: 100%;
+}
+
+.hero__heading {
+  font-size: clamp(var(--font-size-3xl), 8vw, var(--font-size-display));
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-tight);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-5);
+  max-width: 18ch;
+}
+
+.hero__sub {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--space-8);
+}
