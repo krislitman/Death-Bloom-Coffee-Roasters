@@ -1,0 +1,40 @@
+<% content_for :title, @coffee.name %>
+
+<div class="product-detail zone--light">
+  <div class="container product-detail__inner">
+
+    <div class="product-detail__image-wrap">
+      <%= image_tag "products/placeholder.svg",
+            alt: @coffee.name,
+            width: 800,
+            height: 1000,
+            class: "product-detail__image" %>
+    </div>
+
+    <div class="product-detail__info">
+      <p class="product-detail__origin"><%= @coffee.origin %></p>
+      <h1 class="product-detail__name"><%= @coffee.name %></h1>
+      <p class="product-detail__roast"><%= @coffee.roast_level.humanize %> Roast</p>
+
+      <% if @coffee.tasting_notes.any? %>
+        <ul class="tasting-notes">
+          <% @coffee.tasting_notes.each do |note| %>
+            <li class="tasting-notes__tag"><%= note.name.capitalize %></li>
+          <% end %>
+        </ul>
+      <% end %>
+
+      <% if @coffee.description.present? %>
+        <p class="product-detail__description"><%= @coffee.description %></p>
+      <% end %>
+
+      <p class="product-detail__price"><%= @coffee.formatted_price %></p>
+
+      <%# Add to cart — wired up in Step 8 %>
+      <button class="btn btn--primary btn--large" disabled>
+        Add to Cart
+      </button>
+    </div>
+
+  </div>
+</div>

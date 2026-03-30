@@ -1,0 +1,27 @@
+<% content_for :title, "Home" %>
+
+<section class="hero zone--dark" data-controller="scroll-zone">
+  <div class="hero__inner">
+    <h1 class="hero__heading">Death Bloom<br>Coffee Roasters</h1>
+    <p class="hero__sub">Specialty coffee roasted in Denver, CO.</p>
+    <%= link_to "Shop Coffee", coffees_path, class: "btn btn--primary" %>
+  </div>
+</section>
+
+<section class="featured zone--light">
+  <div class="container">
+    <p class="section-label">Featured Coffees</p>
+    <h2 class="section-heading">In the Bag Right Now</h2>
+
+    <% if @featured_coffees.any? %>
+      <div class="product-grid">
+        <% @featured_coffees.each do |coffee| %>
+          <%= render "coffees/card", coffee: coffee %>
+        <% end %>
+      </div>
+      <%= link_to "View All Coffees", coffees_path, class: "btn btn--secondary" %>
+    <% else %>
+      <p>New coffees coming soon.</p>
+    <% end %>
+  </div>
+</section>

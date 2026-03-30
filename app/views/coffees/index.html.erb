@@ -1,0 +1,37 @@
+<% content_for :title, "Coffee" %>
+
+<div class="page-header zone--dark">
+  <div class="container">
+    <h1 class="page-header__heading">Our Coffees</h1>
+  </div>
+</div>
+
+<section class="catalog zone--light">
+  <div class="container">
+    <%# Roast level filter — updates only the coffees-grid Turbo Frame %>
+    <div class="catalog__filters">
+      <p class="catalog__filter-label">Filter by roast</p>
+      <div class="catalog__filter-options">
+        <%= link_to "All", coffees_path, data: { turbo_frame: "coffees-grid" },
+              class: "filter-btn #{"filter-btn--active" if params[:roast_level].blank?}" %>
+        <% Coffee.roast_levels.each_key do |level| %>
+          <%= link_to level.humanize, coffees_path(roast_level: level),
+                data: { turbo_frame: "coffees-grid" },
+                class: "filter-btn #{"filter-btn--active" if params[:roast_level] == level}" %>
+        <% end %>
+      </div>
+    </div>
+
+    <%= turbo_frame_tag "coffees-grid" do %>
+      <% if @coffees.any? %>
+        <div class="product-grid">
+          <% @coffees.each do |coffee| %>
+            <%= render "card", coffee: coffee %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="catalog__empty">No coffees found for that roast level.</p>
+      <% end %>
+    <% end %>
+  </div>
+</section>

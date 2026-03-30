@@ -1,0 +1,22 @@
+<nav class="nav" data-controller="scroll-zone">
+  <div class="nav__inner">
+    <a class="nav__logo" href="<%= root_path %>">
+      Death Bloom
+    </a>
+
+    <ul class="nav__links">
+      <li><%= link_to "Coffee", coffees_path %></li>
+      <% if user_signed_in? %>
+        <li><%= link_to "Orders", orders_path %></li>
+        <li><%= link_to "Account", account_path %></li>
+        <% if current_user.admin? %>
+          <li><%= link_to "Admin", admin_root_path %></li>
+        <% end %>
+        <li><%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "nav__sign-out" %></li>
+      <% else %>
+        <li><%= link_to "Sign in", new_user_session_path %></li>
+        <li><%= link_to "Sign up", new_user_registration_path %></li>
+      <% end %>
+    </ul>
+  </div>
+</nav>
