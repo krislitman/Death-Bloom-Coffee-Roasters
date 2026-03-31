@@ -19,12 +19,43 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body data-controller="cart-drawer">
     <% if Flipper.enabled?(:announcement_bar) %>
       <%= render "shared/announcement_bar" %>
     <% end %>
 
     <%= render "shared/nav" %>
+
+    <%# Cart drawer overlay + panel (Stimulus targets must share a controller scope) %>
+    <div class="cart-drawer__overlay"
+         data-cart-drawer-target="overlay"
+         data-action="click->cart-drawer#closeOnOverlay">
+    </div>
+    <div class="cart-drawer" data-cart-drawer-target="drawer" role="dialog" aria-label="Shopping cart">
+      <div class="cart-drawer__header">
+        <h2>Your Cart</h2>
+        <button class="cart-drawer__close"
+                data-action="cart-drawer#close"
+                aria-label="Close cart">
+          &times;
+        </button>
+      </div>
+      <div class="cart-drawer__body">
+        <div id="cart-items">
+          <% cart_items = current_cart.cart_items.includes(:coffee) %>
+          <% if cart_items.any? %>
+            <%= render cart_items %>
+          <% else %>
+            <p class="cart__empty">Your cart is empty.</p>
+          <% end %>
+        </div>
+      </div>
+      <div class="cart-drawer__footer" id="cart-summary">
+        <p class="cart__total">Total: <%= number_to_currency(current_cart.total_cents / 100.0) %></p>
+        <%= link_to "View Cart", cart_path, class: "btn btn--secondary" %>
+        <%= link_to "Checkout", checkout_path, class: "btn btn--primary" %>
+      </div>
+    </div>
 
     <% if notice.present? %>
       <p class="flash flash--notice" role="status"><%= notice %></p>

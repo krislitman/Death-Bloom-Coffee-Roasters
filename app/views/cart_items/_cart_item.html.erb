@@ -1,0 +1,20 @@
+<div id="<%= dom_id(cart_item) %>" class="cart-item">
+  <div class="cart-item__info">
+    <%= link_to cart_item.coffee.name, coffee_path(cart_item.coffee) %>
+    <span class="cart-item__price"><%= number_to_currency(cart_item.coffee.price_cents / 100.0) %></span>
+  </div>
+
+  <div class="cart-item__controls">
+    <%= form_with url: cart_cart_item_path(cart_item), method: :patch do |f| %>
+      <%= f.number_field :quantity, value: cart_item.quantity, min: 1, max: 10,
+          data: { action: "change->cart-drawer#updateQuantity" } %>
+      <%= f.hidden_field :coffee_id, value: cart_item.coffee_id %>
+    <% end %>
+
+    <%= button_to "Remove", cart_cart_item_path(cart_item), method: :delete,
+        class: "cart-item__remove",
+        data: { turbo_stream: true } %>
+  </div>
+
+  <span class="cart-item__subtotal"><%= number_to_currency(cart_item.total_cents / 100.0) %></span>
+</div>
