@@ -22,6 +22,9 @@ body {
     background-color var(--transition-base),
     color var(--transition-base);
   min-height: 100vh;
+  // Offset fixed nav so content is never hidden beneath it
+  // The hero and full-screen sections handle their own top positioning
+  padding-top: var(--nav-height);
 }
 
 img,

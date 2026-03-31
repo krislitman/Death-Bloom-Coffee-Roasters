@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* ── Content sources ──────────────────────────────────────────────────────── */
+@source "../../../app/views/**/*.erb";
+@source "../../../app/javascript/**/*.js";
+@source "../../../app/helpers/**/*.rb";
+
+/* ── Death Bloom design tokens ────────────────────────────────────────────── */
+@theme {
+  /* Colors */
+  --color-db-bg: #0a0a0a;
+  --color-db-surface: #141414;
+  --color-db-text: #f0ece4;
+  --color-db-muted: #7a7670;
+  --color-db-accent: #c8a96e;
+  --color-db-border: #2a2a2a;
+  --color-db-bg-light: #f5f2ed;
+  --color-db-surface-light: #ffffff;
+  --color-db-text-dark: #0a0a0a;
+  --color-db-muted-light: #5a5652;
+  --color-db-border-light: #e0ddd8;
+
+  /* Typography */
+  --font-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+}

@@ -1,0 +1,255 @@
+// ── Auth Modal ────────────────────────────────────────────────────────────────
+// Covers both the overlay/modal-panel pattern (used in the layout modals)
+// and the auth-page centered-card pattern (used as Devise fallback pages).
+
+// ── Overlay ───────────────────────────────────────────────────────────────────
+.auth-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgb(0 0 0 / 0.72);
+  // Hidden state toggled via .hidden utility (Tailwind) or by the controller
+  // Adding a CSS transition for a soft fade-in when the class is removed
+  opacity: 1;
+  transition: opacity var(--transition-base);
+
+  &.hidden {
+    display: none;
+  }
+}
+
+// ── Modal panel ───────────────────────────────────────────────────────────────
+.auth-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 101;
+
+  width: min(100% - var(--space-8), 28rem); // max 448px, full-width on small screens
+  max-height: calc(100dvh - var(--space-8));
+  overflow-y: auto;
+
+  background-color: var(--color-bg-surface); // #141414
+  border: 1px solid var(--color-border);     // #2a2a2a
+  padding: var(--space-10);                  // 64px
+
+  // Sharp corners — brand-consistent (no border-radius)
+  border-radius: 0;
+
+  &.hidden {
+    display: none;
+  }
+
+  // ── Close button ──────────────────────────────────────────────────────────
+  &__close {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+
+    background: transparent;
+    border: none;
+    padding: var(--space-1) var(--space-2);
+    cursor: pointer;
+
+    font-size: var(--font-size-lg);
+    line-height: 1;
+    color: var(--color-text-muted);
+    transition: color var(--transition-fast);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  // ── Logo ──────────────────────────────────────────────────────────────────
+  &__logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-5);
+  }
+
+  // ── Heading ───────────────────────────────────────────────────────────────
+  &__heading {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-xl);
+    font-weight: var(--fw-bold);
+    color: var(--color-text-primary);
+    text-align: center;
+    letter-spacing: var(--ls-tight);
+    line-height: var(--lh-tight);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+
+  // ── Form ──────────────────────────────────────────────────────────────────
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  &__label {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--ls-wider);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  &__input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background-color: #1e1e1e;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    border-radius: 0;
+    transition: border-color var(--transition-fast);
+    appearance: none;
+
+    &::placeholder {
+      color: var(--color-text-muted);
+      opacity: 0.6;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 0;
+      border-color: var(--color-accent);
+    }
+  }
+
+  // ── Remember me ───────────────────────────────────────────────────────────
+  &__remember {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: calc(-1 * var(--space-2));
+  }
+
+  &__checkbox {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--color-accent);
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  &__remember-label {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  // ── Submit button ─────────────────────────────────────────────────────────
+  &__submit {
+    width: 100%;
+    margin-top: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--ls-wider);
+    text-transform: uppercase;
+
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+      opacity: 0.88;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 3px;
+    }
+
+    &:active {
+      opacity: 0.76;
+    }
+  }
+
+  // ── Switch link ───────────────────────────────────────────────────────────
+  &__switch {
+    margin-top: var(--space-6);
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  &__switch-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-accent);
+    font-size: var(--font-size-sm);
+    font-family: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity var(--transition-fast);
+
+    // Also supports being rendered as an <a> (Devise fallback pages)
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+  }
+}
+
+// ── Devise fallback page (full-page centered card, no overlay) ─────────────────
+.auth-page {
+  min-height: calc(100dvh - var(--nav-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--container-pad);
+  background-color: var(--color-bg);
+
+  &__card {
+    width: min(100%, 28rem);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    padding: var(--space-10);
+    border-radius: 0;
+  }
+}

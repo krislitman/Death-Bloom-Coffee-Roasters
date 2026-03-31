@@ -1,32 +1,48 @@
-<nav class="nav"
+<nav class="nav fixed top-0 left-0 right-0 z-50 h-16 bg-db-bg/90 backdrop-blur-sm border-b border-db-border"
      data-controller="scroll-zone"
      data-scroll-zone-nav-value="true">
-  <div class="nav__inner">
-    <a class="nav__logo" href="<%= root_path %>">
-      Death Bloom
+  <div class="nav__inner flex items-center justify-between h-full max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)]">
+    <a class="nav__logo flex-shrink-0 hover:opacity-70 transition-opacity duration-150" href="<%= root_path %>">
+      <%= image_tag "logo/1. DBCR - logo - w - final files_Artboard 2 - logo 1.png",
+            alt: "Death Bloom Coffee Roasters",
+            width: 120,
+            height: 48,
+            class: "h-10 w-auto object-contain" %>
     </a>
 
-    <ul class="nav__links">
-      <li><%= link_to "Coffee", coffees_path %></li>
+    <ul class="nav__links flex items-center gap-8 text-xs tracking-widest uppercase list-none">
+      <li><%= link_to "Coffee", coffees_path, class: "text-db-muted hover:text-db-text transition-colors duration-150" %></li>
       <li>
         <a href="<%= cart_path %>"
-           class="nav__cart"
+           class="nav__cart text-db-muted hover:text-db-text transition-colors duration-150 flex items-center gap-1.5"
            data-action="cart-drawer#open"
            data-cart-drawer-target="trigger">
           Cart
-          <span id="nav-cart-count" class="nav__cart-count"><%= current_cart.item_count %></span>
+          <span id="nav-cart-count" class="nav__cart-count inline-flex items-center justify-center w-5 h-5 rounded-full bg-db-accent text-db-bg text-[10px] font-bold leading-none"><%= current_cart.item_count %></span>
         </a>
       </li>
       <% if user_signed_in? %>
-        <li><%= link_to "Orders", orders_path %></li>
-        <li><%= link_to "Account", account_path %></li>
+        <li><%= link_to "Orders", orders_path, class: "text-db-muted hover:text-db-text transition-colors duration-150" %></li>
+        <li><%= link_to "Account", account_path, class: "text-db-muted hover:text-db-text transition-colors duration-150" %></li>
         <% if current_user.admin? %>
-          <li><%= link_to "Admin", admin_root_path %></li>
+          <li><%= link_to "Admin", admin_root_path, class: "text-db-muted hover:text-db-text transition-colors duration-150" %></li>
         <% end %>
-        <li><%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "nav__sign-out" %></li>
+        <li><%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "nav__sign-out bg-transparent border-0 text-db-muted hover:text-db-text transition-colors duration-150 text-xs tracking-widest uppercase cursor-pointer p-0" %></li>
       <% else %>
-        <li><%= link_to "Sign in", new_user_session_path %></li>
-        <li><%= link_to "Sign up", new_user_registration_path %></li>
+        <li>
+          <button data-action="dialog#open"
+                  data-dialog-modal-param="sign-in"
+                  class="text-db-muted hover:text-db-text transition-colors duration-150 text-xs tracking-widest uppercase cursor-pointer bg-transparent border-0 p-0">
+            Sign in
+          </button>
+        </li>
+        <li>
+          <button data-action="dialog#open"
+                  data-dialog-modal-param="sign-up"
+                  class="px-4 py-2 border border-db-accent text-db-accent hover:bg-db-accent hover:text-db-bg transition-colors duration-150 text-xs tracking-widest uppercase cursor-pointer bg-transparent">
+            Sign up
+          </button>
+        </li>
       <% end %>
     </ul>
   </div>

@@ -1,31 +1,181 @@
 <% content_for :title, "Home" %>
 
-<section class="hero zone--dark"
+<%# ── Hero ──────────────────────────────────────────────────────────────────── %>
+<section class="hero zone--dark relative flex items-center justify-center min-h-screen overflow-hidden"
          data-controller="scroll-zone"
-         data-scroll-zone-theme-value="dark">
-  <div class="hero__inner">
-    <h1 class="hero__heading">Death Bloom<br>Coffee Roasters</h1>
-    <p class="hero__sub">Specialty coffee roasted in Denver, CO.</p>
-    <%= link_to "Shop Coffee", coffees_path, class: "btn btn--primary" %>
+         data-scroll-zone-theme-value="dark"
+         style="background-image: url('<%= asset_path('denver/pexels-jacobmooreimages-7877912.jpg') %>'); background-size: cover; background-position: center;">
+  <%# Dark overlay %>
+  <div class="absolute inset-0" style="background-color: rgba(0,0,0,0.82);"></div>
+
+  <div class="hero__inner relative z-10 flex flex-col items-center text-center max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] w-full py-28">
+    <%# White logo — displayed prominently above heading %>
+    <div class="mb-10 opacity-0 translate-y-4 transition-all duration-700"
+         data-scroll-zone-target="reveal">
+      <%= image_tag "logo/1. DBCR - logo - w - final files_Artboard 2 - logo 1.png",
+            alt: "Death Bloom Coffee Roasters",
+            width: 280,
+            height: 112,
+            class: "w-56 md:w-72 h-auto object-contain mx-auto" %>
+    </div>
+
+    <p class="hero__sub font-mono text-db-muted text-xs tracking-widest uppercase mb-12
+              opacity-0 translate-y-4 transition-all duration-700 delay-200"
+       data-scroll-zone-target="reveal">
+      Specialty coffee roasted in Denver, CO.
+    </p>
+
+    <div class="opacity-0 translate-y-4 transition-all duration-700 delay-300"
+         data-scroll-zone-target="reveal">
+      <%= link_to "Shop Coffee", coffees_path,
+            class: "btn btn--primary inline-block px-8 py-3 border border-db-accent text-db-accent
+                    hover:bg-db-accent hover:text-db-bg transition-colors duration-300
+                    text-xs tracking-widest uppercase font-mono" %>
+    </div>
   </div>
 </section>
 
-<section class="featured zone--light"
+<%# ── Section A — Denver Roots (dark) ─────────────────────────────────────── %>
+<section class="relative flex items-center justify-center min-h-[70vh] overflow-hidden zone--dark"
+         data-controller="scroll-zone"
+         data-scroll-zone-theme-value="dark"
+         style="background-image: url('<%= asset_path('denver/pexels-quang-vuong-724225078-30035744.jpg') %>'); background-size: cover; background-position: center;">
+  <div class="absolute inset-0 bg-gradient-to-b from-db-bg/80 via-db-bg/60 to-db-bg/80"></div>
+
+  <div class="relative z-10 max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-24 text-center">
+    <p class="font-mono text-db-accent text-xs tracking-widest uppercase mb-4
+              opacity-0 translate-y-4 transition-all duration-700"
+       data-scroll-zone-target="reveal">
+      Denver, Colorado
+    </p>
+    <h2 class="text-db-text font-bold tracking-tight leading-tight mb-6
+               text-[clamp(2.4rem,5vw,4rem)] max-w-[20ch] mx-auto
+               opacity-0 translate-y-4 transition-all duration-700 delay-100"
+        data-scroll-zone-target="reveal">
+      Rooted in Denver
+    </h2>
+    <p class="text-db-muted font-mono text-sm leading-relaxed max-w-lg mx-auto tracking-wide
+              opacity-0 translate-y-4 transition-all duration-700 delay-200"
+       data-scroll-zone-target="reveal">
+      We source, roast, and ship from the heart of the Mile High City.
+    </p>
+  </div>
+</section>
+
+<%# ── Section B — Our Process (light) ────────────────────────────────────── %>
+<section class="zone--light bg-db-bg-light"
          data-controller="scroll-zone"
          data-scroll-zone-theme-value="light">
-  <div class="container">
-    <p class="section-label">Featured Coffees</p>
-    <h2 class="section-heading">In the Bag Right Now</h2>
+  <div class="max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-24
+              grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <%# Text column — left %>
+    <div class="opacity-0 translate-y-4 transition-all duration-700 text-center"
+         data-scroll-zone-target="reveal">
+      <p class="font-mono text-db-accent text-xs tracking-widest uppercase mb-4">Our Process</p>
+      <h2 class="font-bold tracking-tight leading-tight mb-6 text-db-text-dark
+                 text-[clamp(2rem,4vw,3.5rem)] max-w-[20ch] mx-auto">
+        From Farm to Cup
+      </h2>
+      <p class="text-[#5a5652] font-mono text-sm leading-relaxed tracking-wide max-w-prose mx-auto">
+        Every batch is roasted to order. We work directly with farmers to bring you the freshest specialty coffee available.
+      </p>
+    </div>
+
+    <%# Image column — right %>
+    <div class="overflow-hidden opacity-0 translate-y-4 transition-all duration-700 delay-150"
+         data-scroll-zone-target="reveal">
+      <%= image_tag "stock/pexels-alejandro-aznar-155337093-31890566.jpg",
+            alt: "Coffee being poured",
+            width: 800,
+            height: 1000,
+            loading: "lazy",
+            class: "w-full h-full object-cover aspect-[4/5]" %>
+    </div>
+  </div>
+</section>
+
+<%# ── Section C — The Craft (dark) ────────────────────────────────────────── %>
+<section class="zone--dark bg-db-bg"
+         data-controller="scroll-zone"
+         data-scroll-zone-theme-value="dark">
+  <div class="max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-24
+              grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <%# Image column — left %>
+    <div class="overflow-hidden opacity-0 translate-y-4 transition-all duration-700"
+         data-scroll-zone-target="reveal">
+      <%= image_tag "stock/pexels-berkncn-35271966.jpg",
+            alt: "Roasting coffee beans",
+            width: 800,
+            height: 1000,
+            loading: "lazy",
+            class: "w-full h-full object-cover aspect-[4/5]" %>
+    </div>
+
+    <%# Text column — right %>
+    <div class="opacity-0 translate-y-4 transition-all duration-700 delay-150"
+         data-scroll-zone-target="reveal">
+      <p class="font-mono text-db-accent text-xs tracking-widest uppercase mb-4">The Craft</p>
+      <h2 class="text-db-text font-bold tracking-tight leading-tight mb-6
+                 text-[clamp(2rem,4vw,3.5rem)] max-w-[20ch]">
+        Crafted with Intention
+      </h2>
+      <p class="text-db-muted font-mono text-sm leading-relaxed tracking-wide max-w-prose">
+        Small batches. Precise roasting. Exceptional results.
+      </p>
+    </div>
+  </div>
+</section>
+
+<%# ── Section D — Community (light) ──────────────────────────────────────── %>
+<% unless user_signed_in? %>
+<section class="relative flex items-center justify-center min-h-[60vh] overflow-hidden zone--light"
+         data-controller="scroll-zone"
+         data-scroll-zone-theme-value="light"
+         style="background-image: url('<%= asset_path('stock/pexels-esranurkalay-13302015.jpg') %>'); background-size: cover; background-position: center;">
+  <div class="absolute inset-0 bg-black/60"></div>
+
+  <div class="relative z-10 max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-24 text-center">
+    <h2 class="font-bold tracking-tight leading-tight mb-6 text-white
+               text-[clamp(2rem,4vw,3.5rem)] max-w-[24ch] mx-auto
+               opacity-0 translate-y-4 transition-all duration-700"
+        data-scroll-zone-target="reveal">
+      Join the Death Bloom Community
+    </h2>
+    <div class="opacity-0 translate-y-4 transition-all duration-700 delay-150"
+         data-scroll-zone-target="reveal">
+      <%= link_to "Create an Account", new_user_registration_path,
+            class: "inline-block px-8 py-3 bg-db-accent border border-db-accent text-db-bg
+                    hover:bg-transparent hover:text-db-accent transition-colors duration-300
+                    text-xs tracking-widest uppercase font-mono" %>
+    </div>
+  </div>
+</section>
+<% end %>
+
+<%# ── Featured Coffees ─────────────────────────────────────────────────────── %>
+<section class="featured zone--dark bg-db-bg"
+         data-controller="scroll-zone"
+         data-scroll-zone-theme-value="dark">
+  <div class="container max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-24">
+    <p class="section-label font-mono text-db-accent text-xs tracking-widest uppercase mb-4">Featured Coffees</p>
+    <h2 class="section-heading text-db-text font-bold tracking-tight text-[clamp(2rem,4vw,3rem)] mb-12">
+      In the Bag Right Now
+    </h2>
 
     <% if @featured_coffees.any? %>
-      <div class="product-grid">
+      <div class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[clamp(1rem,2vw,2rem)]">
         <% @featured_coffees.each do |coffee| %>
           <%= render "coffees/card", coffee: coffee %>
         <% end %>
       </div>
-      <%= link_to "View All Coffees", coffees_path, class: "btn btn--secondary" %>
+      <div class="mt-12">
+        <%= link_to "View All Coffees", coffees_path,
+              class: "btn btn--secondary inline-block px-8 py-3 border border-db-muted text-db-muted
+                      hover:border-db-text hover:text-db-text transition-colors duration-300
+                      text-xs tracking-widest uppercase font-mono" %>
+      </div>
     <% else %>
-      <p>New coffees coming soon.</p>
+      <p class="text-db-muted font-mono text-sm">New coffees coming soon.</p>
     <% end %>
   </div>
 </section>

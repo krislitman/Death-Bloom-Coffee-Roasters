@@ -1,28 +1,38 @@
-<article class="product-card">
-  <%= link_to coffee_path(coffee), class: "product-card__link" do %>
-    <div class="product-card__image-wrap">
+<article class="product-card flex flex-col group">
+  <%= link_to coffee_path(coffee), class: "product-card__link flex flex-col flex-1 no-underline text-inherit" do %>
+    <div class="product-card__image-wrap overflow-hidden aspect-[4/5] bg-db-surface mb-4">
       <%= image_tag "products/placeholder.svg",
             alt: coffee.name,
             width: 600,
             height: 750,
             loading: "lazy",
-            class: "product-card__image" %>
+            class: "product-card__image w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" %>
     </div>
 
-    <div class="product-card__body">
-      <h3 class="product-card__name"><%= coffee.name %></h3>
-      <p class="product-card__origin"><%= coffee.origin %></p>
-      <p class="product-card__roast"><%= coffee.roast_level.humanize %></p>
+    <div class="product-card__body flex flex-col gap-1">
+      <h3 class="product-card__name text-db-text font-medium tracking-tight text-base">
+        <%= coffee.name %>
+      </h3>
+      <p class="product-card__origin font-mono text-db-muted text-[0.64rem] tracking-widest uppercase">
+        <%= coffee.origin %>
+      </p>
+      <p class="product-card__roast font-mono text-db-muted text-[0.64rem] tracking-widest uppercase">
+        <%= coffee.roast_level.humanize %>
+      </p>
 
       <% if coffee.tasting_notes.loaded? && coffee.tasting_notes.any? %>
-        <ul class="product-card__notes">
+        <ul class="product-card__notes flex flex-wrap gap-1 mt-2 list-none p-0">
           <% coffee.tasting_notes.each do |note| %>
-            <li class="product-card__note"><%= note.name.capitalize %></li>
+            <li class="product-card__note font-mono text-db-muted text-[0.64rem] not-last:after:content-['_·'] not-last:after:ml-1">
+              <%= note.name.capitalize %>
+            </li>
           <% end %>
         </ul>
       <% end %>
 
-      <p class="product-card__price"><%= coffee.formatted_price %></p>
+      <p class="product-card__price font-mono text-db-text text-sm font-medium mt-3">
+        <%= coffee.formatted_price %>
+      </p>
     </div>
   <% end %>
 </article>

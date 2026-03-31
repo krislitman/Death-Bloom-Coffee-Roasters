@@ -15,11 +15,12 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body data-controller="cart-drawer">
+  <body data-controller="cart-drawer dialog">
     <% if Flipper.enabled?(:announcement_bar) %>
       <%= render "shared/announcement_bar" %>
     <% end %>
@@ -63,6 +64,10 @@
     <% if alert.present? %>
       <p class="flash flash--alert" role="alert"><%= alert %></p>
     <% end %>
+
+    <%# Auth modals — hidden by default, opened by the dialog Stimulus controller %>
+    <%= render "shared/auth_modal_sign_in" %>
+    <%= render "shared/auth_modal_sign_up" %>
 
     <%= yield %>
 

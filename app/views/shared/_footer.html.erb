@@ -1,6 +1,22 @@
-<footer class="footer zone--dark">
-  <div class="footer__inner">
-    <p class="footer__brand">Death Bloom Coffee Roasters</p>
-    <p class="footer__location">Denver, CO</p>
+<footer class="footer zone--dark bg-db-bg border-t border-db-border mt-0">
+  <div class="footer__inner max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-16
+              flex flex-col md:flex-row items-center justify-between gap-6">
+    <%# Wordmark logo — white variant %>
+    <a href="<%= root_path %>" class="flex-shrink-0 hover:opacity-70 transition-opacity duration-150">
+      <%= image_tag "logo/1. DBCR - logo - w - final files_Artboard 3 - wordmark.png",
+            alt: "Death Bloom Coffee Roasters",
+            width: 180,
+            height: 36,
+            class: "h-8 w-auto object-contain" %>
+    </a>
+
+    <div class="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-center md:text-left">
+      <p class="footer__location font-mono text-db-muted text-xs tracking-widest uppercase">
+        Denver, CO
+      </p>
+      <p class="font-mono text-db-muted text-xs tracking-wide">
+        &copy; <%= Date.current.year %> Death Bloom Coffee Roasters
+      </p>
+    </div>
   </div>
 </footer>

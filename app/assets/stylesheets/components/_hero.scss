@@ -1,7 +1,9 @@
 // ── Hero Section ─────────────────────────────────────────────────────────────
 
 .hero {
-  min-height: calc(100svh - var(--nav-height));
+  // Pull hero back up so it bleeds behind the transparent fixed nav
+  margin-top: calc(-1 * var(--nav-height));
+  min-height: 100svh;
   display: flex;
   align-items: center;
   padding-block: var(--space-16);

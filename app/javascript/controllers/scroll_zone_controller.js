@@ -9,6 +9,10 @@
 //
 // Usage on the nav to react to scroll depth:
 //   <nav data-controller="scroll-zone" data-scroll-zone-nav-value="true">
+//
+// Reveal targets: any child element with data-scroll-zone-target="reveal"
+// will have its opacity-0 and translate-y-4 Tailwind classes removed when the
+// section enters the viewport (staggered by transition-delay set inline).
 
 import { Controller } from "@hotwired/stimulus"
 
@@ -17,6 +21,8 @@ export default class extends Controller {
     theme: { type: String, default: "dark" },  // "dark" | "light"
     nav:   { type: Boolean, default: false },   // true on the <nav> to track scroll
   }
+
+  static targets = ["reveal"]
 
   connect() {
     if (this.navValue) {
@@ -42,9 +48,10 @@ export default class extends Controller {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return
           this.#applyTheme(entry.target)
+          this.#revealChildren()
         })
       },
-      { threshold: 0.3 }
+      { threshold: 0.15 }
     )
     this.#observer.observe(this.element)
   }
@@ -53,6 +60,13 @@ export default class extends Controller {
     const isDark = this.themeValue === "dark"
     el.classList.toggle("zone--dark",  isDark)
     el.classList.toggle("zone--light", !isDark)
+  }
+
+  // Remove the Tailwind reveal classes so CSS transitions play
+  #revealChildren() {
+    this.revealTargets.forEach((el) => {
+      el.classList.remove("opacity-0", "translate-y-4")
+    })
   }
 
   #observeScroll() {
