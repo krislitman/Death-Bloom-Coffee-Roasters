@@ -8,6 +8,15 @@
 
     <ul class="nav__links">
       <li><%= link_to "Coffee", coffees_path %></li>
+      <li>
+        <a href="<%= cart_path %>"
+           class="nav__cart"
+           data-action="cart-drawer#open"
+           data-cart-drawer-target="trigger">
+          Cart
+          <span id="nav-cart-count" class="nav__cart-count"><%= current_cart.item_count %></span>
+        </a>
+      </li>
       <% if user_signed_in? %>
         <li><%= link_to "Orders", orders_path %></li>
         <li><%= link_to "Account", account_path %></li>

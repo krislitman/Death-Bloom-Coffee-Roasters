@@ -1,0 +1,20 @@
+<% content_for :title, "Your Cart" %>
+
+<section class="cart zone--light">
+  <div class="container">
+    <h1 class="cart__heading">Your Cart</h1>
+
+    <% if @cart_items.any? %>
+      <div id="cart-items">
+        <%= render @cart_items %>
+      </div>
+
+      <div class="cart__summary" id="cart-summary">
+        <p class="cart__total">Total: <%= number_to_currency(@cart.total_cents / 100.0) %></p>
+        <%= link_to "Checkout", checkout_path, class: "btn btn--primary" %>
+      </div>
+    <% else %>
+      <p class="cart__empty">Your cart is empty. <%= link_to "Shop coffee", coffees_path %>.</p>
+    <% end %>
+  </div>
+</section>

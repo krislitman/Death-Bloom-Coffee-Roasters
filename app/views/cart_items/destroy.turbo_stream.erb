@@ -1,0 +1,10 @@
+<%= turbo_stream.remove @cart_item %>
+<%= turbo_stream.replace "cart-summary" do %>
+  <div class="cart__summary" id="cart-summary">
+    <p class="cart__total">Total: <%= number_to_currency(@cart.total_cents / 100.0) %></p>
+    <%= link_to "Checkout", checkout_path, class: "btn btn--primary" %>
+  </div>
+<% end %>
+<%= turbo_stream.replace "nav-cart-count" do %>
+  <span id="nav-cart-count" class="nav__cart-count"><%= @cart.item_count %></span>
+<% end %>

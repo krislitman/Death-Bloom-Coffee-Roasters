@@ -30,10 +30,11 @@
 
       <p class="product-detail__price"><%= @coffee.formatted_price %></p>
 
-      <%# Add to cart — wired up in Step 8 %>
-      <button class="btn btn--primary btn--large" disabled>
-        Add to Cart
-      </button>
+      <%= form_with url: cart_cart_items_path, data: { turbo_stream: true } do %>
+        <%= hidden_field_tag "cart_item[coffee_id]", @coffee.id %>
+        <%= hidden_field_tag "cart_item[quantity]", 1 %>
+        <%= submit_tag "Add to Cart", class: "btn btn--primary btn--large" %>
+      <% end %>
     </div>
 
   </div>
