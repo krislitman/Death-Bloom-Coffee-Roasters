@@ -51,8 +51,8 @@
           <% end %>
         </div>
       </div>
-      <div class="cart-drawer__footer" id="cart-summary">
-        <p class="cart__total">Total: <%= number_to_currency(current_cart.total_cents / 100.0) %></p>
+      <div class="cart-drawer__footer">
+        <p class="cart__total" id="cart-drawer-total">Total: <%= number_to_currency(current_cart.total_cents / 100.0) %></p>
         <%= link_to "View Cart", cart_path, class: "btn btn--secondary" %>
         <%= link_to "Checkout", checkout_path, class: "btn btn--primary" %>
       </div>

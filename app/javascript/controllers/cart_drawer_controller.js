@@ -22,10 +22,4 @@ export default class extends Controller {
     }
   }
 
-  updateQuantity(event) {
-    const form = event.target.closest("form")
-    if (form) {
-      form.requestSubmit()
-    }
-  }
 }

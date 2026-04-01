@@ -5,6 +5,9 @@
     <%= link_to "Checkout", checkout_path, class: "btn btn--primary" %>
   </div>
 <% end %>
+<%= turbo_stream.replace "cart-drawer-total" do %>
+  <p class="cart__total" id="cart-drawer-total">Total: <%= number_to_currency(@cart.total_cents / 100.0) %></p>
+<% end %>
 <%= turbo_stream.replace "nav-cart-count" do %>
   <span id="nav-cart-count" class="nav__cart-count"><%= @cart.item_count %></span>
 <% end %>

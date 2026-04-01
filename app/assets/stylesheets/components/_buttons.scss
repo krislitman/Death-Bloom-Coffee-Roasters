@@ -28,11 +28,11 @@
   }
 }
 
-// Primary — filled accent
+// Primary — filled gold accent (zone-safe: uses --color-accent which never flips)
 .btn--primary {
-  background-color: var(--color-text-primary);
-  color: var(--color-bg);
-  border-color: var(--color-text-primary);
+  background-color: var(--color-accent);
+  color: #0a0a0a;
+  border-color: var(--color-accent);
 
   &:hover:not(:disabled) {
     opacity: 0.85;
@@ -54,4 +54,9 @@
 .btn--large {
   padding: var(--space-4) var(--space-8);
   font-size: var(--font-size-base);
+}
+
+// Width modifier
+.btn--full-width {
+  width: 100%;
 }
