@@ -1,7 +1,7 @@
 <article class="product-card flex flex-col group">
-  <%= link_to coffee_path(coffee), class: "product-card__link flex flex-col flex-1 no-underline text-inherit" do %>
+  <%= link_to coffee_path(coffee), data: { turbo_frame: "_top" }, class: "product-card__link flex flex-col flex-1 no-underline text-inherit" do %>
     <div class="product-card__image-wrap overflow-hidden aspect-[4/5] bg-db-surface mb-4">
-      <%= image_tag "products/placeholder.svg",
+      <%= image_tag "stock/stock_coffee_bag.jpg",
             alt: coffee.name,
             width: 600,
             height: 750,
@@ -34,5 +34,11 @@
         <%= coffee.formatted_price %>
       </p>
     </div>
+  <% end %>
+
+  <%= form_with url: cart_cart_items_path, data: { turbo_stream: true } do %>
+    <%= hidden_field_tag "cart_item[coffee_id]", coffee.id %>
+    <%= hidden_field_tag "cart_item[quantity]", 1 %>
+    <%= submit_tag "Add to Cart", class: "btn btn--primary btn--full-width" %>
   <% end %>
 </article>

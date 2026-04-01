@@ -8,10 +8,6 @@
   inset: 0;
   z-index: 100;
   background-color: rgb(0 0 0 / 0.72);
-  // Hidden state toggled via .hidden utility (Tailwind) or by the controller
-  // Adding a CSS transition for a soft fade-in when the class is removed
-  opacity: 1;
-  transition: opacity var(--transition-base);
 
   &.hidden {
     display: none;

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe "Coffees", type: :request do
   describe "GET /coffees" do
     let!(:ethiopian) { create(:coffee, name: "Ethiopian Yirgacheffe", roast_level: :light,  position: 0) }
@@ -18,6 +20,11 @@ RSpec.describe "Coffees", type: :request do
     it "does not display inactive coffees" do
       get coffees_path
       expect(response.body).not_to include(inactive.name)
+    end
+
+    it "renders an add-to-cart form for each active coffee" do
+      get coffees_path
+      expect(response.body).to include(cart_cart_items_path)
     end
 
     context "when filtering by roast level" do
@@ -57,6 +64,26 @@ RSpec.describe "Coffees", type: :request do
     it "displays tasting notes" do
       get coffee_path(coffee)
       expect(response.body).to include("Chocolate")
+    end
+
+    it "displays the origin" do
+      get coffee_path(coffee)
+      expect(response.body).to include(coffee.origin)
+    end
+
+    it "displays the roast level" do
+      get coffee_path(coffee)
+      expect(response.body).to include(coffee.roast_level.humanize)
+    end
+
+    it "displays the description" do
+      get coffee_path(coffee)
+      expect(response.body).to include(coffee.description)
+    end
+
+    it "renders an add-to-cart form" do
+      get coffee_path(coffee)
+      expect(response.body).to include(cart_cart_items_path)
     end
 
     context "when the coffee is inactive" do
