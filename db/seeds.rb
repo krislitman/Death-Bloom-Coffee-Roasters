@@ -14,7 +14,7 @@ puts "Feature flags seeded: #{Flipper.features.map(&:key).join(', ')}"
 
 # ── Admin User ─────────────────────────────────────────────────────────────────
 admin = User.find_or_initialize_by(email: "admin@dev.com")
-admin.assign_attributes(password: "admindev123", password_confirmation: "admindev123", role: :admin, confirmed_at: Time.current)
+admin.assign_attributes(password: "admindev123", password_confirmation: "admindev123", role: :admin)
 admin.save!
 
 puts "Admin user seeded: #{admin.email}"

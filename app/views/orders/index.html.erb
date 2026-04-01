@@ -1,0 +1,26 @@
+<% content_for :title, "My Orders" %>
+
+<div class="page-header zone--dark">
+  <div class="container">
+    <h1 class="page-header__heading">My Orders</h1>
+  </div>
+</div>
+
+<section class="zone--dark bg-db-bg">
+  <div class="container max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-16">
+
+    <% if @grid.assets.empty? %>
+      <p class="font-mono text-db-muted text-sm tracking-wide">You haven't placed any orders yet.</p>
+      <%= link_to "Shop Coffee", coffees_path, class: "inline-block mt-6 px-8 py-3 border border-db-accent text-db-accent hover:bg-db-accent hover:text-db-bg transition-colors duration-300 text-xs tracking-widest uppercase font-mono" %>
+    <% else %>
+      <%= datagrid_table_for @grid, @grid.assets, html: { class: "orders-table w-full" } do |column, asset| %>
+        <% if column.name == :actions %>
+          <%= link_to "View Order", order_path(asset), class: "font-mono text-db-accent text-xs tracking-widest uppercase hover:underline" %>
+        <% else %>
+          <%= datagrid_format_value(column, asset) %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+  </div>
+</section>

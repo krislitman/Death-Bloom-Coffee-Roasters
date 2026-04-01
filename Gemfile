@@ -22,6 +22,9 @@ gem "jbuilder"
 
 # Authentication
 gem "devise"
+gem "omniauth"
+gem "omniauth-google-oauth2"
+gem "omniauth-rails_csrf_protection"
 
 # Feature flags
 gem "flipper"
@@ -36,6 +39,9 @@ gem "easypost"
 
 # Pagination
 gem "pagy"
+
+# Data grid / filterable tables
+gem "datagrid"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
