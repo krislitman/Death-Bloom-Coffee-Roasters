@@ -1,0 +1,54 @@
+<% content_for :title, "Order #{@order.order_number}" %>
+
+<div class="page-header zone--dark">
+  <div class="container">
+    <p class="font-mono text-db-accent text-xs tracking-widest uppercase mb-2">Order</p>
+    <h1 class="page-header__heading"><%= @order.order_number %></h1>
+  </div>
+</div>
+
+<section class="zone--dark bg-db-bg">
+  <div class="container max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-16">
+
+    <%# Order meta %>
+    <div class="mb-12 flex flex-wrap gap-8 font-mono text-xs tracking-widest uppercase text-db-muted border-b border-db-border pb-8">
+      <div>
+        <p class="text-db-muted mb-1">Status</p>
+        <p class="text-db-text"><%= @order.status.humanize %></p>
+      </div>
+      <div>
+        <p class="text-db-muted mb-1">Placed On</p>
+        <p class="text-db-text"><%= @order.created_at.strftime("%B %-d, %Y") %></p>
+      </div>
+      <div>
+        <p class="text-db-muted mb-1">Total</p>
+        <p class="text-db-accent">$<%= '%.2f' % @order.total %></p>
+      </div>
+    </div>
+
+    <%# Line items %>
+    <h2 class="font-mono text-db-muted text-xs tracking-widest uppercase mb-6">Items</h2>
+    <table class="orders-table w-full mb-12">
+      <thead>
+        <tr>
+          <th>Coffee</th>
+          <th>Qty</th>
+          <th>Unit Price</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @order_items.each do |item| %>
+          <tr>
+            <td><%= link_to item.coffee.name, coffee_path(item.coffee.slug), class: "text-db-accent hover:underline" %></td>
+            <td><%= item.quantity %></td>
+            <td>$<%= '%.2f' % (item.unit_price_cents / 100.0) %></td>
+            <td>$<%= '%.2f' % (item.total_cents / 100.0) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <%= link_to "← Back to Orders", orders_path, class: "font-mono text-db-muted text-xs tracking-widest uppercase hover:text-db-text transition-colors duration-150" %>
+  </div>
+</section>
