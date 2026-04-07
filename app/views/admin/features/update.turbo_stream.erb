@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "feature_row_#{@feature.key}" do %>
+  <%= render "feature", feature: @feature %>
+<% end %>

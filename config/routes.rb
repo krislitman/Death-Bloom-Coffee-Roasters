@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   # Public routes
   root "home#index"
+  resource :newsletter_subscription, only: [:create]
 
   resources :coffees, only: [:index, :show], param: :slug
 
@@ -36,6 +37,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#index"
 
+    resources :features,   only: [:index, :update]
     resources :users,      only: [:index, :show, :edit, :update]
     resources :coffees,    except: [:show]
     resources :orders,     only: [:index, :show, :update]

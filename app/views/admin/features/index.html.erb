@@ -1,0 +1,23 @@
+<% content_for :title, "Feature Manager" %>
+
+<div class="admin-page zone--dark">
+  <div class="container">
+    <div class="admin-page__header">
+      <%= link_to "← Dashboard", admin_root_path, class: "admin-page__back" %>
+      <h1 class="admin-page__heading">Feature Manager</h1>
+      <p class="admin-page__subheading">
+        Toggle features on or off. Changes take effect immediately.
+      </p>
+    </div>
+
+    <div class="feature-list">
+      <% if @features.any? %>
+        <% @features.each do |feature| %>
+          <%= render "feature", feature: feature %>
+        <% end %>
+      <% else %>
+        <p class="admin-page__empty">No features registered yet.</p>
+      <% end %>
+    </div>
+  </div>
+</div>
