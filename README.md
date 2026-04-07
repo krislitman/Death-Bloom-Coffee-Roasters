@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="app/assets/images/logo/1. DBCR - logo - w - final files_Artboard 4 - wordmark only.png" alt="Death Bloom Coffee Roasters" width="420" />
+  <img src="app/assets/images/logo/1. DBCR - logo - w - final files_Artboard 3 - wordmark.png" alt="Death Bloom Coffee Roasters" width="420" />
 </p>
 
 <p align="center">
