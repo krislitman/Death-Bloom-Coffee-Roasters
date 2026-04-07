@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="app/assets/images/logo/2.%20DBCR%20-%20logo%20-%20b%20-%20final%20files_Artboard%203%20-%20wordmark.png" alt="Death Bloom Coffee Roasters" width="420" />
+  <img src="app/assets/images/logo/1. DBCR - logo - w - final files_Artboard 4 - wordmark only.png" alt="Death Bloom Coffee Roasters" width="420" />
 </p>
-
-<h1 align="center">Death Bloom Coffee Roasters</h1>
 
 <p align="center">
   A specialty coffee e-commerce platform built with Ruby on Rails, deployed on Heroku, and containerized with Docker.
