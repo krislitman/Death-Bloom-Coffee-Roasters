@@ -1,0 +1,19 @@
+<div id="feature_row_<%= feature.key %>" class="feature-row">
+  <div class="feature-row__info">
+    <h3 class="feature-row__name"><%= feature.key.humanize %></h3>
+    <code class="feature-row__key"><%= feature.key %></code>
+  </div>
+
+  <div class="feature-row__controls">
+    <span class="feature-row__badge <%= feature.enabled? ? 'feature-row__badge--on' : 'feature-row__badge--off' %>">
+      <%= feature.enabled? ? "Enabled" : "Disabled" %>
+    </span>
+
+    <%= form_with url: admin_feature_path(feature.key), method: :patch,
+                  data: { turbo_stream: true } do |f| %>
+      <%= f.hidden_field :enabled, value: feature.enabled? ? "false" : "true" %>
+      <%= f.submit feature.enabled? ? "Disable" : "Enable",
+            class: "btn #{feature.enabled? ? 'btn--outline-danger' : 'btn--primary'} btn--sm" %>
+    <% end %>
+  </div>
+</div>

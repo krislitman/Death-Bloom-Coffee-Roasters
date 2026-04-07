@@ -1,0 +1,21 @@
+<% content_for :title, "Admin Dashboard" %>
+
+<div class="admin-page zone--dark">
+  <div class="container">
+    <div class="admin-page__header">
+      <p class="admin-page__eyebrow">Death Bloom Coffee Roasters</p>
+      <h1 class="admin-page__heading">Admin Dashboard</h1>
+    </div>
+
+    <div class="admin-grid">
+      <%= link_to admin_features_path, class: "admin-card" do %>
+        <div class="admin-card__icon" aria-hidden="true">⚑</div>
+        <h2 class="admin-card__title">Feature Manager</h2>
+        <p class="admin-card__description">
+          Enable or disable feature flags across the application.
+        </p>
+        <span class="admin-card__cta">Manage features →</span>
+      <% end %>
+    </div>
+  </div>
+</div>

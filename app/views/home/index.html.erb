@@ -152,6 +152,49 @@
 </section>
 <% end %>
 
+<%# ── Newsletter (feature-flagged) ────────────────────────────────────────── %>
+<% if Flipper.enabled?(:newsletter) %>
+<section class="newsletter zone--dark bg-db-bg"
+         data-controller="scroll-zone"
+         data-scroll-zone-theme-value="dark">
+  <div class="max-w-[1440px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-24 text-center">
+    <p class="font-mono text-db-accent text-xs tracking-widest uppercase mb-4
+              opacity-0 translate-y-4 transition-all duration-700"
+       data-scroll-zone-target="reveal">
+      Stay Connected
+    </p>
+    <h2 class="text-db-text font-bold tracking-tight leading-tight mb-6
+               text-[clamp(2rem,4vw,3rem)] max-w-[24ch] mx-auto
+               opacity-0 translate-y-4 transition-all duration-700 delay-100"
+        data-scroll-zone-target="reveal">
+      Join Our Newsletter
+    </h2>
+    <p class="text-db-muted font-mono text-sm leading-relaxed tracking-wide max-w-lg mx-auto mb-8
+              opacity-0 translate-y-4 transition-all duration-700 delay-200"
+       data-scroll-zone-target="reveal">
+      New roasts, brewing tips, and exclusive offers — straight to your inbox.
+    </p>
+    <div class="opacity-0 translate-y-4 transition-all duration-700 delay-300"
+         data-scroll-zone-target="reveal">
+      <div id="newsletter-form">
+        <%= form_with url: newsletter_subscription_path,
+              data: { turbo_stream: true } do %>
+          <div class="newsletter-form">
+            <%= email_field_tag :email, nil,
+                  placeholder: "your@email.com",
+                  class: "newsletter-form__input",
+                  required: true,
+                  autocomplete: "email" %>
+            <%= submit_tag "Subscribe", class: "btn btn--primary" %>
+          </div>
+          <p id="newsletter-error" class="newsletter-error" role="alert"></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+<% end %>
+
 <%# ── Featured Coffees ─────────────────────────────────────────────────────── %>
 <section class="featured zone--dark bg-db-bg"
          data-controller="scroll-zone"

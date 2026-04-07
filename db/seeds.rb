@@ -1,14 +1,20 @@
 # Idempotent — safe to run in any environment at any time.
 
 # ── Feature Flags ─────────────────────────────────────────────────────────────
+# Flags are added if missing; their enabled/disabled state is never overwritten
+# so toggling in the admin UI persists across re-seeds.
 %i[
   subscriptions
   admin_tools
   announcement_bar
   maintenance_mode
+  newsletter
 ].each do |flag|
   Flipper.add(flag) unless Flipper.exist?(flag)
 end
+
+# newsletter defaults to disabled — Flipper.add without .enable leaves it off.
+# Admins toggle it via the Feature Manager; re-seeding never overrides their choice.
 
 puts "Feature flags seeded: #{Flipper.features.map(&:key).join(', ')}"
 

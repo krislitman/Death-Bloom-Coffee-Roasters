@@ -56,7 +56,25 @@
   font-size: var(--font-size-base);
 }
 
+// Size modifiers
+.btn--sm {
+  padding: var(--space-1) var(--space-4);
+  font-size: var(--font-size-xs);
+}
+
 // Width modifier
 .btn--full-width {
   width: 100%;
+}
+
+// Danger outline — destructive action, not filled
+.btn--outline-danger {
+  background-color: transparent;
+  color: var(--color-error);
+  border-color: var(--color-error);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-error);
+    color: #fff;
+  }
 }
