@@ -50,16 +50,11 @@ Rails.application.configure do
   # config.active_job.queue_adapter = :resque
 
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.delivery_method = :mailgun
   config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "deathbloomcoffee.com") }
-  config.action_mailer.smtp_settings = {
-    address:              ENV["MAILGUN_SMTP_ADDRESS"],
-    port:                 ENV.fetch("MAILGUN_SMTP_PORT", 587).to_i,
-    domain:               ENV["MAILGUN_SMTP_DOMAIN"],
-    user_name:            ENV["MAILGUN_SMTP_USERNAME"],
-    password:             ENV["MAILGUN_SMTP_PASSWORD"],
-    authentication:       :plain,
-    enable_starttls_auto: true
+  config.action_mailer.mailgun_settings = {
+    api_key: ENV.fetch("MAILGUN_API_KEY"),
+    domain:  ENV.fetch("MAILGUN_DOMAIN")
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

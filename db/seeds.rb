@@ -9,6 +9,7 @@
   announcement_bar
   maintenance_mode
   newsletter
+  google_auth
 ].each do |flag|
   Flipper.add(flag) unless Flipper.exist?(flag)
 end

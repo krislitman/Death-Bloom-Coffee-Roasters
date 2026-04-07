@@ -35,7 +35,10 @@ gem "flipper-ui"
 gem "stripe"
 
 # Shipping
-gem "easypost"
+gem "shippo"
+
+# Email delivery via Mailgun HTTP API
+gem "mailgun_rails"
 
 # Pagination
 gem "pagy"

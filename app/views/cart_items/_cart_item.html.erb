@@ -9,11 +9,13 @@
       <%= button_to "−", cart_cart_item_path(cart_item), method: :patch,
           params: { cart_item: { quantity: [cart_item.quantity - 1, 1].max, coffee_id: cart_item.coffee_id } },
           class: "cart-item__qty-btn",
+          data: { turbo_stream: true },
           disabled: cart_item.quantity <= 1 %>
       <span class="cart-item__qty-display"><%= cart_item.quantity %></span>
       <%= button_to "+", cart_cart_item_path(cart_item), method: :patch,
           params: { cart_item: { quantity: [cart_item.quantity + 1, 10].min, coffee_id: cart_item.coffee_id } },
           class: "cart-item__qty-btn",
+          data: { turbo_stream: true },
           disabled: cart_item.quantity >= 10 %>
     </div>
   </div>
@@ -21,5 +23,6 @@
   <span class="cart-item__subtotal"><%= number_to_currency(cart_item.total_cents / 100.0) %></span>
 
   <%= button_to "Remove", cart_cart_item_path(cart_item), method: :delete,
-      class: "cart-item__remove" %>
+      class: "cart-item__remove",
+      data: { turbo_stream: true } %>
 </div>
