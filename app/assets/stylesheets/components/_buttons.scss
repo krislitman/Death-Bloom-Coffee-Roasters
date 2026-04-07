@@ -31,11 +31,12 @@
 // Primary — filled gold accent (zone-safe: uses --color-accent which never flips)
 .btn--primary {
   background-color: var(--color-accent);
-  color: #0a0a0a;
+  color: #000000;
   border-color: var(--color-accent);
 
   &:hover:not(:disabled) {
-    opacity: 0.85;
+    background-color: #d9bc8a;
+    border-color: #d9bc8a;
   }
 }
 

@@ -11,6 +11,8 @@ Rails.application.routes.draw do
 
   # Public routes
   root "home#index"
+  get "/privacy-policy",    to: "pages#privacy",  as: :privacy_policy
+  get "/terms-of-service",  to: "pages#terms",    as: :terms_of_service
   resource :newsletter_subscription, only: [:create]
 
   resources :coffees, only: [:index, :show], param: :slug

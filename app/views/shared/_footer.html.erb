@@ -17,6 +17,12 @@
       <p class="font-mono text-db-muted text-xs tracking-wide">
         &copy; <%= Date.current.year %> Death Bloom Coffee Roasters
       </p>
+      <nav class="flex items-center gap-6" aria-label="Legal">
+        <%= link_to "Privacy Policy", privacy_policy_path,
+              class: "font-mono text-db-muted text-xs tracking-widest uppercase hover:text-db-text transition-colors duration-150" %>
+        <%= link_to "Terms of Service", terms_of_service_path,
+              class: "font-mono text-db-muted text-xs tracking-widest uppercase hover:text-db-text transition-colors duration-150" %>
+      </nav>
     </div>
   </div>
 </footer>

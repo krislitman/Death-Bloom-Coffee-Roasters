@@ -167,37 +167,9 @@
   }
 
   // ── Submit button ─────────────────────────────────────────────────────────
+  // Uses btn btn--primary btn--full-width; this class adds only the top margin.
   &__submit {
-    width: 100%;
     margin-top: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-
-    background-color: var(--color-accent);
-    color: var(--color-bg);
-    border: none;
-    border-radius: 0;
-    cursor: pointer;
-
-    font-family: var(--font-mono);
-    font-size: var(--font-size-xs);
-    font-weight: var(--fw-bold);
-    letter-spacing: var(--ls-wider);
-    text-transform: uppercase;
-
-    transition: opacity var(--transition-fast);
-
-    &:hover {
-      opacity: 0.88;
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 3px;
-    }
-
-    &:active {
-      opacity: 0.76;
-    }
   }
 
   // ── OAuth button ───────────────────────────────────────────────────────────

@@ -25,3 +25,61 @@
   font-size: var(--font-size-sm);
   letter-spacing: var(--ls-normal);
 }
+
+// ── Policy / prose pages ──────────────────────────────────────────────────────
+
+.prose-db {
+  .section-heading {
+    font-size: var(--font-size-lg);
+    font-weight: var(--fw-bold);
+    letter-spacing: var(--ls-tight);
+    line-height: var(--lh-tight);
+    color: var(--color-text-primary);
+    margin-top: var(--space-10);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .subsection-heading {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: var(--ls-wider);
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-2);
+  }
+
+  .policy-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+
+    li {
+      font-family: var(--font-mono);
+      font-size: var(--font-size-sm);
+      line-height: var(--lh-relaxed);
+      letter-spacing: var(--ls-normal);
+      color: var(--color-text-muted);
+      padding-left: var(--space-4);
+      position: relative;
+
+      &::before {
+        content: "—";
+        position: absolute;
+        left: 0;
+        color: var(--color-accent);
+      }
+
+      strong {
+        color: var(--color-text-primary);
+        font-weight: var(--fw-medium);
+      }
+    }
+  }
+}
