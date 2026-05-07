@@ -45,7 +45,7 @@
         <div id="cart-items">
           <% cart_items = current_cart.cart_items.includes(:coffee) %>
           <% if cart_items.any? %>
-            <%= render cart_items %>
+            <%= render partial: "cart_items/cart_item", collection: cart_items %>
           <% else %>
             <p class="cart__empty">Your cart is empty.</p>
           <% end %>

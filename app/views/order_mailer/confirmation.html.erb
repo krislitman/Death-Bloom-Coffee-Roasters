@@ -1,0 +1,35 @@
+<h1>Your order is confirmed</h1>
+<p>Thank you for your order from Death Bloom Coffee Roasters.</p>
+
+<p><strong>Order number:</strong> <%= @order.order_number %></p>
+
+<h2>Order summary</h2>
+<table>
+  <% @order.order_items.includes(:coffee).each do |item| %>
+    <tr>
+      <td><%= item.coffee.name %> &times; <%= item.quantity %></td>
+      <td><%= number_to_currency(item.total_cents / 100.0) %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td><strong>Total</strong></td>
+    <td><strong><%= number_to_currency(@order.total_cents / 100.0) %></strong></td>
+  </tr>
+</table>
+
+<h2>Shipping to</h2>
+<p>
+  <%= @order.shipping_address_name %><br>
+  <%= @order.shipping_address_line1 %><br>
+  <% if @order.shipping_address_line2.present? %>
+    <%= @order.shipping_address_line2 %><br>
+  <% end %>
+  <%= @order.shipping_address_city %>, <%= @order.shipping_address_state %> <%= @order.shipping_address_zip %><br>
+  <%= @order.shipping_address_country %>
+</p>
+
+<% if @order.user.nil? %>
+  <p>To check your order status, reply to this email with your order number.</p>
+<% end %>
+
+<p>Questions? Contact us at <%= ENV.fetch("SUPPORT_EMAIL", "hello@deathbloomcoffee.com") %></p>

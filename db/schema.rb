@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_07_021252) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_06_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -98,16 +98,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_021252) do
 
   create_table "orders", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "email"
     t.string "order_number", null: false
     t.string "shipping_address_city"
+    t.string "shipping_address_country"
     t.string "shipping_address_line1"
+    t.string "shipping_address_line2"
+    t.string "shipping_address_name"
     t.string "shipping_address_state"
     t.string "shipping_address_zip"
     t.integer "status", default: 0, null: false
+    t.string "stripe_checkout_session_id"
     t.integer "total_cents", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["order_number"], name: "index_orders_on_order_number", unique: true
+    t.index ["stripe_checkout_session_id"], name: "index_orders_on_stripe_checkout_session_id", unique: true
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -119,6 +125,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_021252) do
     t.bigint "user_id", null: false
     t.index ["user_id", "processor"], name: "index_payment_profiles_on_user_id_and_processor", unique: true
     t.index ["user_id"], name: "index_payment_profiles_on_user_id"
+  end
+
+  create_table "pending_checkouts", force: :cascade do |t|
+    t.bigint "cart_id", null: false
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.datetime "expires_at"
+    t.string "shipping_address_city", null: false
+    t.string "shipping_address_country", default: "US", null: false
+    t.string "shipping_address_line1", null: false
+    t.string "shipping_address_line2"
+    t.string "shipping_address_name", null: false
+    t.string "shipping_address_state", null: false
+    t.string "shipping_address_zip", null: false
+    t.integer "shippo_rate_amount_cents", null: false
+    t.string "shippo_rate_carrier"
+    t.string "shippo_rate_id", null: false
+    t.string "shippo_rate_service"
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cart_id"], name: "index_pending_checkouts_on_cart_id"
+    t.index ["token"], name: "index_pending_checkouts_on_token", unique: true
   end
 
   create_table "tasting_notes", force: :cascade do |t|
@@ -167,4 +195,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_021252) do
   add_foreign_key "order_items", "orders"
   add_foreign_key "orders", "users"
   add_foreign_key "payment_profiles", "users"
+  add_foreign_key "pending_checkouts", "carts"
 end

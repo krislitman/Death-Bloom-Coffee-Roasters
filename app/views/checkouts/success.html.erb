@@ -1,0 +1,10 @@
+<% content_for :title, "Order Confirmed" %>
+
+<div class="checkout-confirmation">
+  <h1>Order confirmed</h1>
+  <p>Your Death Bloom Coffee is on its way. A confirmation email has been sent with your order details.</p>
+  <% if params[:session_id].present? %>
+    <p class="confirmation-note">Ref: <%= params[:session_id] %></p>
+  <% end %>
+  <%= link_to "Continue shopping", coffees_path, class: "btn btn--secondary" %>
+</div>

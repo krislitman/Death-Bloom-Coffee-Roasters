@@ -1,5 +1,5 @@
 class Order < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
   has_many :order_items, dependent: :destroy
   has_many :coffees, through: :order_items
 
@@ -7,6 +7,7 @@ class Order < ApplicationRecord
 
   validates :order_number, presence: true, uniqueness: true
   validates :total_cents, numericality: { greater_than_or_equal_to: 0 }
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   before_validation :assign_order_number, on: :create
 
@@ -17,6 +18,6 @@ class Order < ApplicationRecord
   private
 
   def assign_order_number
-    self.order_number ||= "DB-#{format('%06d', self.class.count + 1)}"
+    self.order_number ||= "DB-#{SecureRandom.hex(3).upcase}"
   end
 end

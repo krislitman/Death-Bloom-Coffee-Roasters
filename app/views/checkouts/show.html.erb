@@ -1,0 +1,125 @@
+<% content_for :title, "Checkout" %>
+
+<div class="checkout-page">
+  <div class="checkout-inner">
+
+    <section class="checkout-form-section">
+      <h1 class="checkout-title">Checkout</h1>
+
+      <%# Address form — submits via Turbo Frame to load live shipping rates %>
+      <%= form_with url: rates_checkout_path, method: :get,
+                    data: { turbo_frame: "shipping-rates" } do %>
+
+        <fieldset class="checkout-fieldset">
+          <legend class="checkout-legend">Contact</legend>
+
+          <div class="checkout-field">
+            <%= label_tag "destination_email", "Email", class: "checkout-label" %>
+            <%= text_field_tag "destination[email]", nil,
+                  id: "destination_email",
+                  type: "email",
+                  class: "checkout-input",
+                  placeholder: "your@email.com",
+                  required: true,
+                  autocomplete: "email" %>
+          </div>
+        </fieldset>
+
+        <fieldset class="checkout-fieldset">
+          <legend class="checkout-legend">Shipping address</legend>
+
+          <div class="checkout-field">
+            <%= label_tag "destination_name", "Full name", class: "checkout-label" %>
+            <%= text_field_tag "destination[name]", nil,
+                  id: "destination_name",
+                  class: "checkout-input",
+                  placeholder: "Jane Doe",
+                  required: true,
+                  autocomplete: "name" %>
+          </div>
+
+          <div class="checkout-field">
+            <%= label_tag "destination_line1", "Address", class: "checkout-label" %>
+            <%= text_field_tag "destination[line1]", nil,
+                  id: "destination_line1",
+                  class: "checkout-input",
+                  placeholder: "123 Main St",
+                  required: true,
+                  autocomplete: "address-line1" %>
+          </div>
+
+          <div class="checkout-field">
+            <%= label_tag "destination_line2", class: "checkout-label" do %>
+              Apt, suite, etc. <span class="optional">(optional)</span>
+            <% end %>
+            <%= text_field_tag "destination[line2]", nil,
+                  id: "destination_line2",
+                  class: "checkout-input",
+                  autocomplete: "address-line2" %>
+          </div>
+
+          <div class="checkout-field-row">
+            <div class="checkout-field">
+              <%= label_tag "destination_city", "City", class: "checkout-label" %>
+              <%= text_field_tag "destination[city]", nil,
+                    id: "destination_city",
+                    class: "checkout-input",
+                    required: true,
+                    autocomplete: "address-level2" %>
+            </div>
+
+            <div class="checkout-field">
+              <%= label_tag "destination_state", "State", class: "checkout-label" %>
+              <%= text_field_tag "destination[state]", nil,
+                    id: "destination_state",
+                    class: "checkout-input",
+                    placeholder: "CO",
+                    maxlength: 2,
+                    required: true,
+                    autocomplete: "address-level1" %>
+            </div>
+
+            <div class="checkout-field">
+              <%= label_tag "destination_zip", "ZIP", class: "checkout-label" %>
+              <%= text_field_tag "destination[zip]", nil,
+                    id: "destination_zip",
+                    class: "checkout-input",
+                    placeholder: "80203",
+                    required: true,
+                    autocomplete: "postal-code" %>
+            </div>
+          </div>
+
+          <%= hidden_field_tag "destination[country]", "US" %>
+        </fieldset>
+
+        <button type="submit" class="btn btn--secondary btn--full-width">
+          Get Shipping Rates
+        </button>
+      <% end %>
+
+      <%# Turbo Frame — replaced with rate options after address is submitted %>
+      <turbo-frame id="shipping-rates" style="display: block; margin-top: var(--space-6);">
+        <p class="rates-placeholder">Enter your address above to see shipping options.</p>
+      </turbo-frame>
+    </section>
+
+    <aside class="checkout-summary">
+      <h2 class="summary-title">Order summary</h2>
+      <ul class="summary-items">
+        <% @cart.cart_items.includes(:coffee).each do |item| %>
+          <li class="summary-item">
+            <span class="summary-item__name"><%= item.coffee.name %> &times; <%= item.quantity %></span>
+            <span class="summary-item__price"><%= number_to_currency(item.total_cents / 100.0) %></span>
+          </li>
+        <% end %>
+      </ul>
+      <div class="summary-total">
+        <span>Subtotal</span>
+        <span><%= number_to_currency(@cart.total_cents / 100.0) %></span>
+      </div>
+      <p class="summary-note">Shipping &amp; tax calculated at next step</p>
+    </aside>
+
+  </div>
+</div>

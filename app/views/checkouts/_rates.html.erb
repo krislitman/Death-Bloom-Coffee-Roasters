@@ -1,0 +1,40 @@
+<turbo-frame id="shipping-rates">
+  <% if rates.any? %>
+    <%= form_with url: checkout_path, method: :post do %>
+      <%# Mirror address data as hidden inputs so it POSTs with the form %>
+      <%= hidden_field_tag "checkout[email]",   destination[:email] %>
+      <%= hidden_field_tag "checkout[name]",    destination[:name] %>
+      <%= hidden_field_tag "checkout[line1]",   destination[:line1] %>
+      <%= hidden_field_tag "checkout[line2]",   destination[:line2] %>
+      <%= hidden_field_tag "checkout[city]",    destination[:city] %>
+      <%= hidden_field_tag "checkout[state]",   destination[:state] %>
+      <%= hidden_field_tag "checkout[zip]",     destination[:zip] %>
+      <%= hidden_field_tag "checkout[country]", destination[:country].presence || "US" %>
+
+      <fieldset class="checkout-fieldset" style="margin-top: var(--space-6);">
+        <legend class="checkout-legend">Shipping method</legend>
+        <div class="checkout-rates">
+          <% rates.each do |rate| %>
+            <label class="rate-option">
+              <%= radio_button_tag "checkout[rate_id]", rate[:id], rates.one?,
+                    required: true, class: "rate-option__radio" %>
+              <span class="rate-option__details">
+                <span class="rate-option__name"><%= rate[:carrier] %> <%= rate[:service] %></span>
+                <span class="rate-option__eta"><%= pluralize(rate[:estimated_days], "business day") %></span>
+              </span>
+              <span class="rate-option__price"><%= number_to_currency(rate[:amount_cents] / 100.0) %></span>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+
+      <p class="checkout-tax-note">Tax calculated by Stripe at payment</p>
+
+      <button type="submit" class="btn btn--primary btn--full-width">
+        Proceed to Payment &rarr;
+      </button>
+    <% end %>
+  <% else %>
+    <p class="rates-error">No shipping rates found for this address. Please check your details and try again.</p>
+  <% end %>
+</turbo-frame>

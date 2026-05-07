@@ -1,0 +1,21 @@
+Your order is confirmed — Death Bloom Coffee Roasters
+
+Order number: <%= @order.order_number %>
+
+ORDER SUMMARY
+<% @order.order_items.includes(:coffee).each do |item| %>
+  <%= item.coffee.name %> x <%= item.quantity %> — <%= number_to_currency(item.total_cents / 100.0) %>
+<% end %>
+
+Total: <%= number_to_currency(@order.total_cents / 100.0) %>
+
+SHIPPING TO
+<%= @order.shipping_address_name %>
+<%= @order.shipping_address_line1 %>
+<% if @order.shipping_address_line2.present? %><%= @order.shipping_address_line2 %>
+<% end %><%= @order.shipping_address_city %>, <%= @order.shipping_address_state %> <%= @order.shipping_address_zip %>
+<%= @order.shipping_address_country %>
+<% if @order.user.nil? %>
+To check your order status, reply to this email with your order number.
+<% end %>
+Questions? <%= ENV.fetch("SUPPORT_EMAIL", "hello@deathbloomcoffee.com") %>

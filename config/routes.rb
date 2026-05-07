@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resource :checkout, only: [:show, :create] do
     get :success
     get :cancel
+    get :rates
   end
 
   # Stripe webhooks (no CSRF — verified via Stripe signature)

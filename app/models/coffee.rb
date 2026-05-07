@@ -4,11 +4,9 @@ class Coffee < ApplicationRecord
 
   enum :roast_level, {
     light:        0,
-    medium_light: 1,
     medium:       2,
-    medium_dark:  3,
     dark:         4
-  }, default: :medium
+  }, default: :light
 
   validates :name,        presence: true
   validates :origin,      presence: true
