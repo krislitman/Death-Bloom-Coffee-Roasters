@@ -4,6 +4,7 @@ FactoryBot.define do
     sequence(:slug)  { |n| "#{Faker::Internet.slug}-#{n}" }
     origin           { Faker::Coffee.country }
     roast_level      { :medium }
+    processing       { "Washed" }
     description      { Faker::Lorem.paragraph }
     price_cents      { 1800 }
     active           { true }

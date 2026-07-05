@@ -76,6 +76,11 @@ RSpec.describe "Coffees", type: :request do
       expect(response.body).to include(coffee.roast_level.humanize)
     end
 
+    it "displays the processing method" do
+      get coffee_path(coffee)
+      expect(response.body).to include(coffee.processing)
+    end
+
     it "displays the description" do
       get coffee_path(coffee)
       expect(response.body).to include(coffee.description)

@@ -1,63 +1,34 @@
 class StripeCheckoutService
-  # NOTE: txcd_10000000 = "Food for home consumption". Requires legal/tax review
-  # before treating as production-ready for all jurisdictions.
   PRODUCT_TAX_CODE  = "txcd_10000000"
   SHIPPING_TAX_CODE = "txcd_92010001"
 
-  def initialize(cart:, pending_checkout:, user: nil)
-    @cart             = cart
-    @pending_checkout = pending_checkout
-    @user             = user
+  STANDARD_SHIPPING_CENTS = 600
+  EXPRESS_SHIPPING_CENTS  = 1500
+
+  def initialize(cart:, user: nil)
+    @cart = cart
+    @user = user
   end
 
   def call
-    customer = find_or_create_stripe_customer
-
-    Stripe::Checkout::Session.create(
-      customer:                   customer.id,
-      customer_update:            { address: "auto" },
-      payment_method_types:       [ "card" ],
-      mode:                       "payment",
-      line_items:                 line_items,
-      automatic_tax:              { enabled: true },
-      billing_address_collection: "auto",
-      success_url:                success_url,
-      cancel_url:                 cancel_url,
-      metadata:                   { pending_checkout_token: @pending_checkout.token }
-    )
+    Stripe::Checkout::Session.create(session_params)
   end
 
   private
 
-  def find_or_create_stripe_customer
-    if @user&.stripe_customer_id
-      customer = Stripe::Customer.retrieve(@user.stripe_customer_id)
-      Stripe::Customer.update(customer.id, address: stripe_address)
-      customer
-    else
-      customer = Stripe::Customer.create(
-        email:    @pending_checkout.email,
-        address:  stripe_address,
-        metadata: { guest: @user.nil?.to_s }
-      )
-      @user&.update!(stripe_customer_id: customer.id)
-      customer
-    end
-  end
-
-  def stripe_address
-    {
-      line1:       @pending_checkout.shipping_address_line1,
-      line2:       @pending_checkout.shipping_address_line2,
-      city:        @pending_checkout.shipping_address_city,
-      state:       @pending_checkout.shipping_address_state,
-      postal_code: @pending_checkout.shipping_address_zip,
-      country:     @pending_checkout.shipping_address_country
+  def session_params
+    params = {
+      mode:                        "payment",
+      line_items:                  coffee_line_items,
+      automatic_tax:               { enabled: true },
+      shipping_address_collection: { allowed_countries: [ "US" ] },
+      shipping_options:            shipping_options,
+      success_url:                 success_url,
+      cancel_url:                  cancel_url,
+      metadata:                    { cart_id: @cart.id }
     }
-  end
-
-  def line_items
-    coffee_line_items + [ shipping_line_item ]
+    params[:customer_email] = @user.email if @user
+    params
   end
 
   def coffee_line_items
@@ -78,30 +49,36 @@ class StripeCheckoutService
     end
   end
 
-  def shipping_line_item
+  def shipping_options
+    [
+      shipping_option("Standard", STANDARD_SHIPPING_CENTS),
+      shipping_option("Express",  EXPRESS_SHIPPING_CENTS)
+    ]
+  end
+
+  def shipping_option(display_name, amount_cents)
     {
-      price_data: {
-        currency:     "usd",
-        product_data: {
-          name:     "Shipping — #{@pending_checkout.shippo_rate_carrier} #{@pending_checkout.shippo_rate_service}",
-          tax_code: SHIPPING_TAX_CODE
-        },
-        unit_amount:  @pending_checkout.shippo_rate_amount_cents,
-        tax_behavior: "exclusive"
-      },
-      quantity: 1
+      shipping_rate_data: {
+        type:         "fixed_amount",
+        fixed_amount: { amount: amount_cents, currency: "usd" },
+        display_name: display_name,
+        tax_behavior: "exclusive",
+        tax_code:     SHIPPING_TAX_CODE
+      }
     }
   end
 
   def success_url
-    host = ENV.fetch("APP_HOST", "localhost:3000")
-    protocol = Rails.env.production? ? "https" : "http"
-    "#{protocol}://#{host}/checkout/success?session_id={CHECKOUT_SESSION_ID}"
+    "#{base_url}/checkout/success?session_id={CHECKOUT_SESSION_ID}"
   end
 
   def cancel_url
-    host = ENV.fetch("APP_HOST", "localhost:3000")
+    "#{base_url}/checkout/cancel"
+  end
+
+  def base_url
+    host     = ENV.fetch("APP_HOST", "localhost:3000")
     protocol = Rails.env.production? ? "https" : "http"
-    "#{protocol}://#{host}/checkout/cancel"
+    "#{protocol}://#{host}"
   end
 end

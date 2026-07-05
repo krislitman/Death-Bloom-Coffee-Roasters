@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_06_000002) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_04_000002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_000002) do
     t.string "origin", null: false
     t.integer "position", default: 0, null: false
     t.integer "price_cents", null: false
+    t.string "processing"
     t.integer "roast_level", default: 2, null: false
     t.string "slug", null: false
     t.datetime "updated_at", null: false
@@ -127,28 +128,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_000002) do
     t.index ["user_id"], name: "index_payment_profiles_on_user_id"
   end
 
-  create_table "pending_checkouts", force: :cascade do |t|
-    t.bigint "cart_id", null: false
-    t.datetime "created_at", null: false
-    t.string "email", null: false
-    t.datetime "expires_at"
-    t.string "shipping_address_city", null: false
-    t.string "shipping_address_country", default: "US", null: false
-    t.string "shipping_address_line1", null: false
-    t.string "shipping_address_line2"
-    t.string "shipping_address_name", null: false
-    t.string "shipping_address_state", null: false
-    t.string "shipping_address_zip", null: false
-    t.integer "shippo_rate_amount_cents", null: false
-    t.string "shippo_rate_carrier"
-    t.string "shippo_rate_id", null: false
-    t.string "shippo_rate_service"
-    t.string "token", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cart_id"], name: "index_pending_checkouts_on_cart_id"
-    t.index ["token"], name: "index_pending_checkouts_on_token", unique: true
-  end
-
   create_table "tasting_notes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
@@ -195,5 +174,4 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_000002) do
   add_foreign_key "order_items", "orders"
   add_foreign_key "orders", "users"
   add_foreign_key "payment_profiles", "users"
-  add_foreign_key "pending_checkouts", "carts"
 end

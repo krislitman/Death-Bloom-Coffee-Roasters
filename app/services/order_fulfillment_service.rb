@@ -6,34 +6,55 @@ class OrderFulfillmentService
   def call
     return if Order.exists?(stripe_checkout_session_id: @session.id)
 
-    pending_checkout = PendingCheckout.find_by!(token: @session.metadata.pending_checkout_token)
-    cart = pending_checkout.cart
+    cart = Cart.find_by(id: @session.metadata.cart_id)
 
-    ActiveRecord::Base.transaction do
-      order = build_order(pending_checkout)
-      build_order_items(order, cart)
-      pending_checkout.destroy!
-      cart.destroy!
-      OrderMailer.confirmation(order).deliver_later
+    if cart
+      fulfill_with_cart(cart)
+    else
+      fulfill_without_cart
     end
   end
 
   private
 
-  def build_order(pending_checkout)
+  def fulfill_with_cart(cart)
+    ActiveRecord::Base.transaction do
+      order = build_order
+      build_order_items(order, cart)
+      cart.destroy!
+      OrderMailer.confirmation(order).deliver_later
+    end
+  end
+
+  def fulfill_without_cart
+    Rails.logger.error(
+      "OrderFulfillmentService: no cart for paid session #{@session.id}; recording order without line items"
+    )
+
+    ActiveRecord::Base.transaction do
+      order = build_order
+      OrderMailer.confirmation(order).deliver_later
+    end
+  end
+
+  def build_order
+    email   = @session.customer_details&.email
+    details = @session.collected_information&.shipping_details
+    address = details&.address
+
     Order.create!(
-      user:                        User.find_by(email: pending_checkout.email),
-      email:                       pending_checkout.email,
-      status:                      :processing,
-      total_cents:                 @session.amount_total,
-      stripe_checkout_session_id:  @session.id,
-      shipping_address_name:       pending_checkout.shipping_address_name,
-      shipping_address_line1:      pending_checkout.shipping_address_line1,
-      shipping_address_line2:      pending_checkout.shipping_address_line2,
-      shipping_address_city:       pending_checkout.shipping_address_city,
-      shipping_address_state:      pending_checkout.shipping_address_state,
-      shipping_address_zip:        pending_checkout.shipping_address_zip,
-      shipping_address_country:    pending_checkout.shipping_address_country
+      user:                       User.find_by(email: email),
+      email:                      email,
+      status:                     :processing,
+      total_cents:                @session.amount_total,
+      stripe_checkout_session_id: @session.id,
+      shipping_address_name:      details&.name,
+      shipping_address_line1:     address&.line1,
+      shipping_address_line2:     address&.line2,
+      shipping_address_city:      address&.city,
+      shipping_address_state:     address&.state,
+      shipping_address_zip:       address&.postal_code,
+      shipping_address_country:   address&.country
     )
   end
 
