@@ -1,6 +1,6 @@
 <% content_for :title, @coffee.name %>
 
-<div class="product-detail zone--light">
+<div class="product-detail">
   <div class="container product-detail__inner">
 
     <div class="product-detail__image-wrap">
@@ -16,6 +16,10 @@
       <h1 class="product-detail__name"><%= @coffee.name %></h1>
       <p class="product-detail__roast"><%= @coffee.roast_level.humanize %> Roast</p>
 
+      <% if @coffee.processing.present? %>
+        <p class="product-detail__processing"><%= @coffee.processing %></p>
+      <% end %>
+
       <% if @coffee.tasting_notes.any? %>
         <ul class="tasting-notes">
           <% @coffee.tasting_notes.each do |note| %>
@@ -30,7 +34,7 @@
 
       <p class="product-detail__price"><%= @coffee.formatted_price %></p>
 
-      <%= form_with url: cart_cart_items_path, data: { turbo_stream: true } do %>
+      <%= form_with url: cart_cart_items_path, data: { turbo_stream: true, action: "turbo:submit-end->cart-drawer#openAfterAdd" } do %>
         <%= hidden_field_tag "cart_item[coffee_id]", @coffee.id %>
         <%= hidden_field_tag "cart_item[quantity]", 1 %>
         <%= submit_tag "Add to Cart", class: "btn btn--primary btn--large" %>

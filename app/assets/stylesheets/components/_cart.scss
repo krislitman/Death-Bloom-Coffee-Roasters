@@ -167,6 +167,21 @@
     position: sticky;
     bottom: 0;
     background: var(--color-bg-surface);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+
+    .cart__total {
+      flex-basis: 100%;
+    }
+
+    form {
+      display: contents;
+    }
+
+    .btn {
+      flex: 1;
+    }
   }
 
   &__overlay {

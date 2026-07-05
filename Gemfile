@@ -34,9 +34,6 @@ gem "flipper-ui"
 # Payments
 gem "stripe"
 
-# Shipping
-gem "shippo"
-
 # Email delivery via Mailgun HTTP API
 gem "mailgun_rails"
 

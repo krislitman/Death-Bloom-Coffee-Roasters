@@ -30,6 +30,7 @@ puts "Admin user seeded: #{admin.email}"
 tasting_note_names = %w[
   chocolate caramel brown\ sugar cherry citrus jasmine
   blueberry vanilla hazelnut almond peach plum
+  stone\ fruit honey floral\ brightness
 ]
 
 tasting_notes = tasting_note_names.each_with_object({}) do |name, hash|
@@ -63,6 +64,33 @@ coffees_data = [
     description: "A bold, full-bodied dark roast with deep earthy warmth and a long smoky finish.",
     price_cents: 1700,
     tasting_notes: %w[chocolate vanilla hazelnut]
+  },
+  {
+    name: "Edwin Norena — Light Roast",
+    origin: "Colombia",
+    roast_level: :light,
+    processing: "Carbonic Honey, Peach Co-ferment",
+    description: "A 12 oz Colombian lot named for its cultivator, Edwin Norena.",
+    price_cents: 1999,
+    tasting_notes: [ "stone fruit", "honey", "floral brightness" ]
+  },
+  {
+    name: "Edwin Norena — Medium Roast",
+    origin: "Colombia",
+    roast_level: :medium,
+    processing: "Carbonic Honey, Peach Co-ferment",
+    description: "A 12 oz Colombian lot named for its cultivator, Edwin Norena.",
+    price_cents: 1999,
+    tasting_notes: [ "stone fruit", "honey", "floral brightness" ]
+  },
+  {
+    name: "Edwin Norena — Dark Roast",
+    origin: "Colombia",
+    roast_level: :dark,
+    processing: "Carbonic Honey, Peach Co-ferment",
+    description: "A 12 oz Colombian lot named for its cultivator, Edwin Norena.",
+    price_cents: 1999,
+    tasting_notes: [ "stone fruit", "honey", "floral brightness" ]
   }
 ]
 
@@ -72,6 +100,7 @@ coffees_data.each_with_index do |attrs, index|
     c.slug        = attrs[:name].parameterize
     c.origin      = attrs[:origin]
     c.roast_level = attrs[:roast_level]
+    c.processing  = attrs[:processing]
     c.description = attrs[:description]
     c.price_cents = attrs[:price_cents]
     c.active      = true

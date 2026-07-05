@@ -4,7 +4,16 @@ export default class extends Controller {
   static targets = ["drawer", "overlay"]
 
   open(event) {
-    event.preventDefault()
+    if (event) event.preventDefault()
+    this.show()
+  }
+
+  openAfterAdd(event) {
+    if (event.detail && event.detail.success === false) return
+    this.show()
+  }
+
+  show() {
     this.drawerTarget.classList.add("cart-drawer--open")
     this.overlayTarget.classList.add("cart-drawer__overlay--visible")
     document.body.classList.add("cart-drawer-active")
@@ -21,5 +30,4 @@ export default class extends Controller {
       this.close()
     }
   }
-
 }

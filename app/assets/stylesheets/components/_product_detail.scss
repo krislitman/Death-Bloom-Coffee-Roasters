@@ -59,6 +59,14 @@
   color: var(--color-text-muted);
 }
 
+.product-detail__processing {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
 // Tasting note tags — scannable metadata row (Onyx reference)
 .tasting-notes {
   display: flex;

@@ -21,10 +21,9 @@ Rails.application.routes.draw do
     resources :cart_items, only: [:create, :update, :destroy]
   end
 
-  resource :checkout, only: [:show, :create] do
+  resource :checkout, only: [:create] do
     get :success
     get :cancel
-    get :rates
   end
 
   # Stripe webhooks (no CSRF — verified via Stripe signature)
