@@ -51,7 +51,7 @@ Rails.application.configure do
 
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :mailgun
-  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "deathbloomcoffee.com") }
+  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "deathbloomcoffeeroasters.com") }
   config.action_mailer.mailgun_settings = {
     api_key: ENV.fetch("MAILGUN_API_KEY"),
     domain:  ENV.fetch("MAILGUN_DOMAIN")

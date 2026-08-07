@@ -30,12 +30,12 @@ Severity key: **BLOCKER** (breaks the flow or loses money/data),
 
 ### BLOCKER
 
-- **B1 — Admin namespace is partially implemented.** `admin/orders` fulfillment UI
-  now exists (index/show/update: set status + carrier + tracking number, auto-stamps
-  `shipped_at`/`delivered_at`), so orders can be fulfilled and tracked end to end.
-  Still missing: `admin/users`, `admin/coffees`, and `admin/audit_logs` controllers —
-  those routes still 500. No admin UI to add or edit coffees means the catalog is
-  seed/console-managed for now. Implement or remove those three route sets before launch.
+- **B1 — RESOLVED. Admin namespace is now implemented.** `admin/orders` (fulfillment:
+  status + carrier + tracking, auto-stamps `shipped_at`/`delivered_at`), `admin/coffees`
+  (full CRUD incl. pricing and tasting notes), and `admin/users` (list/show/role
+  management) all exist and are covered by request specs. The dead `admin/audit_logs`
+  route was **removed** — there is no `AuditLog` model or table; audit logging is a
+  future feature, not a missing controller.
 
 - **B2 — No shipping integration.** The architecture names EasyPost, but nothing is
   wired. Combined with B1, an order can be paid but never fulfilled or tracked from

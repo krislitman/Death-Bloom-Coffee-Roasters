@@ -1,0 +1,51 @@
+<% content_for :title, "Coffees" %>
+
+<div class="admin-page zone--dark">
+  <div class="container">
+    <div class="admin-page__header">
+      <%= link_to "← Dashboard", admin_root_path, class: "admin-page__back" %>
+      <h1 class="admin-page__heading">Coffees</h1>
+      <p class="admin-page__subheading"><%= pluralize(@coffees.size, "coffee") %> in the catalog</p>
+    </div>
+
+    <div class="mb-8">
+      <%= link_to "+ New Coffee", new_admin_coffee_path, class: "btn btn--primary btn--sm" %>
+    </div>
+
+    <% if @coffees.any? %>
+      <table class="orders-table w-full">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Origin</th>
+            <th>Roast</th>
+            <th>Price</th>
+            <th>Active</th>
+            <th>Position</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @coffees.each do |coffee| %>
+            <tr>
+              <td><%= coffee.name %></td>
+              <td><%= coffee.origin %></td>
+              <td><%= coffee.roast_level.humanize %></td>
+              <td><%= coffee.formatted_price %></td>
+              <td><%= coffee.active? ? "Yes" : "No" %></td>
+              <td><%= coffee.position %></td>
+              <td class="whitespace-nowrap">
+                <%= link_to "Edit", edit_admin_coffee_path(coffee), class: "font-mono text-db-accent text-xs tracking-widest uppercase hover:underline" %>
+                <%= button_to "Delete", admin_coffee_path(coffee), method: :delete,
+                      form: { class: "inline ml-4", data: { turbo_confirm: "Delete #{coffee.name}?" } },
+                      class: "font-mono text-db-muted text-xs tracking-widest uppercase hover:text-db-text bg-transparent border-0 p-0 cursor-pointer" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="admin-page__empty">No coffees yet.</p>
+    <% end %>
+  </div>
+</div>

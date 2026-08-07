@@ -1,0 +1,25 @@
+<% content_for :title, "Edit #{@user.email}" %>
+
+<div class="admin-page zone--dark">
+  <div class="container">
+    <div class="admin-page__header">
+      <%= link_to "← #{@user.email}", admin_user_path(@user), class: "admin-page__back" %>
+      <h1 class="admin-page__heading">Edit Role</h1>
+      <p class="admin-page__subheading"><%= @user.email %></p>
+    </div>
+
+    <%= form_with model: [:admin, @user], method: :patch do |f| %>
+      <div class="max-w-md">
+        <div class="mb-8">
+          <%= f.label :role, class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+          <%= f.select :role, User.roles.keys.map { |r| [r.humanize, r] }, {},
+                class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+        </div>
+        <div class="flex items-center gap-6">
+          <%= f.submit "Save", class: "btn btn--primary btn--sm" %>
+          <%= link_to "Cancel", admin_user_path(@user), class: "font-mono text-db-muted text-xs tracking-widest uppercase hover:text-db-text" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

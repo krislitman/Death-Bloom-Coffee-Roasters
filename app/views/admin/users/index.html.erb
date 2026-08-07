@@ -1,0 +1,32 @@
+<% content_for :title, "Users" %>
+
+<div class="admin-page zone--dark">
+  <div class="container">
+    <div class="admin-page__header">
+      <%= link_to "← Dashboard", admin_root_path, class: "admin-page__back" %>
+      <h1 class="admin-page__heading">Users</h1>
+      <p class="admin-page__subheading"><%= pluralize(@users.size, "user") %></p>
+    </div>
+
+    <table class="orders-table w-full">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Joined</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td><%= user.email %></td>
+            <td><%= user.role.humanize %></td>
+            <td><%= user.created_at.strftime("%b %-d, %Y") %></td>
+            <td><%= link_to "View", admin_user_path(user), class: "font-mono text-db-accent text-xs tracking-widest uppercase hover:underline" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

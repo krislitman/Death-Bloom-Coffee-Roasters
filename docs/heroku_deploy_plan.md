@@ -3,8 +3,8 @@
 A step-by-step runbook to take the app from `main` to a live, custom-domain,
 payment-taking site on Heroku.
 
-> **Assumed domain: `deathbloomcoffee.com`** (matches `config/environments/production.rb`
-> and `SUPPORT_EMAIL`). If your purchased domain differs, substitute it everywhere below.
+> **Domain: `deathbloomcoffeeroasters.com`** (confirmed; wired into
+> `config/environments/production.rb` and the mailer/support-email defaults).
 > Commands assume the Heroku app is named `death-bloom` — rename to taste.
 
 ---
@@ -13,7 +13,7 @@ payment-taking site on Heroku.
 
 - Heroku CLI installed and logged in (`heroku login`).
 - Payment + email accounts ready in **live** mode: Stripe (live keys + a webhook
-  endpoint), Mailgun (verified sending domain, e.g. `mg.deathbloomcoffee.com`).
+  endpoint), Mailgun (verified sending domain, e.g. `mg.deathbloomcoffeeroasters.com`).
 - Access to the domain registrar's DNS panel.
 - Green build locally: `docker compose run --rm -e RAILS_ENV=test web bundle exec rspec`
   (one known unrelated failure: `Coffee#roast_level` enum drift — see readiness doc M1).
@@ -45,13 +45,13 @@ heroku config:set -a death-bloom \
   RACK_ENV=production \
   SECRET_KEY_BASE="$(bin/rails secret)" \
   DEVISE_SECRET_KEY="$(bin/rails secret)" \
-  APP_HOST="deathbloomcoffee.com" \
-  SUPPORT_EMAIL="hello@deathbloomcoffee.com" \
+  APP_HOST="deathbloomcoffeeroasters.com" \
+  SUPPORT_EMAIL="hello@deathbloomcoffeeroasters.com" \
   STRIPE_PUBLISHABLE_KEY="pk_live_…" \
   STRIPE_SECRET_KEY="sk_live_…" \
   STRIPE_WEBHOOK_SECRET="whsec_…"       `# from step 6, set after registering the endpoint` \
   MAILGUN_API_KEY="key-…" \
-  MAILGUN_DOMAIN="mg.deathbloomcoffee.com" \
+  MAILGUN_DOMAIN="mg.deathbloomcoffeeroasters.com" \
   GOOGLE_CLIENT_ID="…" \
   GOOGLE_CLIENT_SECRET="…"
 ```
@@ -109,7 +109,7 @@ heroku logs --tail -a death-bloom
 ```bash
 heroku run -a death-bloom rails runner '
   %i[subscriptions admin_tools announcement_bar maintenance_mode newsletter google_auth].each { |f| Flipper.add(f) unless Flipper.exist?(f) }
-  User.create!(email: "you@deathbloomcoffee.com", password: ENV.fetch("ADMIN_SEED_PASSWORD"), role: :admin)
+  User.create!(email: "you@deathbloomcoffeeroasters.com", password: ENV.fetch("ADMIN_SEED_PASSWORD"), role: :admin)
 '
 ```
 (Set `ADMIN_SEED_PASSWORD` as a one-off config var, then unset it.)
@@ -117,7 +117,7 @@ heroku run -a death-bloom rails runner '
 **B. Run seeds, then immediately rotate the admin:**
 ```bash
 heroku run -a death-bloom rails db:seed
-heroku run -a death-bloom rails runner 'User.find_by(email:"admin@dev.com").update!(email:"you@deathbloomcoffee.com", password: SecureRandom.base58(24))'
+heroku run -a death-bloom rails runner 'User.find_by(email:"admin@dev.com").update!(email:"you@deathbloomcoffeeroasters.com", password: SecureRandom.base58(24))'
 ```
 
 Admin UI lives at `/admin` (dashboard → **Orders** for fulfillment, **Feature Manager**
@@ -131,7 +131,7 @@ Fulfillment depends on it (the `/checkout/success` fallback is a safety net, not
 substitute).
 
 1. Stripe Dashboard → Developers → Webhooks → **Add endpoint**
-   `https://deathbloomcoffee.com/webhooks/stripe`
+   `https://deathbloomcoffeeroasters.com/webhooks/stripe`
 2. Event: **`checkout.session.completed`**.
 3. Copy the endpoint's **Signing secret** → set `STRIPE_WEBHOOK_SECRET` (step 2) and
    redeploy or `heroku config:set`.
@@ -142,8 +142,8 @@ substitute).
 ## 7. Custom domain + SSL
 
 ```bash
-heroku domains:add deathbloomcoffee.com      -a death-bloom
-heroku domains:add www.deathbloomcoffee.com  -a death-bloom
+heroku domains:add deathbloomcoffeeroasters.com      -a death-bloom
+heroku domains:add www.deathbloomcoffeeroasters.com  -a death-bloom
 heroku domains -a death-bloom                # prints the DNS targets to use
 ```
 
@@ -170,8 +170,8 @@ heroku certs:auto -a death-bloom             # watch until status = Cert issued
 once the cert is live. Decide whether apex or `www` is canonical and 301 the other.
 
 **Also update, for the live domain:**
-- Google OAuth (if `google_auth` on): add `https://deathbloomcoffee.com/users/auth/google_oauth2/callback` as an authorized redirect URI.
-- Mailgun: verify `mg.deathbloomcoffee.com` DNS (SPF/DKIM/MX) so confirmation emails deliver.
+- Google OAuth (if `google_auth` on): add `https://deathbloomcoffeeroasters.com/users/auth/google_oauth2/callback` as an authorized redirect URI.
+- Mailgun: verify `mg.deathbloomcoffeeroasters.com` DNS (SPF/DKIM/MX) so confirmation emails deliver.
 
 ---
 
@@ -180,7 +180,7 @@ once the cert is live. Decide whether apex or `www` is canonical and 301 the oth
 The one thing the automated suite can't cover is Stripe's hosted page. Run a real
 end-to-end pass:
 
-1. Visit `https://deathbloomcoffee.com`, register, add a coffee, check out.
+1. Visit `https://deathbloomcoffeeroasters.com`, register, add a coffee, check out.
 2. Complete payment with a **live** card (or a Stripe test card if the endpoint is
    still in test mode for the dry run).
 3. Confirm: webhook fires (`heroku logs`), order appears with a `DB-XXXXXX` number,
@@ -190,7 +190,7 @@ end-to-end pass:
    for the same order via email.
 5. Refund/clean up the test order in Stripe.
 
-Health check: `https://deathbloomcoffee.com/up` should return 200 — point Heroku
+Health check: `https://deathbloomcoffeeroasters.com/up` should return 200 — point Heroku
 monitoring / an uptime pinger at it.
 
 ---
@@ -211,9 +211,8 @@ is additive (nullable columns), so a code rollback is safe without a DB rollback
 
 **Before taking real orders:**
 - Rotate/replace the seed admin credentials (step 5).
-- Remove or implement `admin/users`, `admin/coffees`, `admin/audit_logs` routes (they 500 today).
-- Decide catalog management: no admin coffee UI yet — coffees are seed/console-managed.
 - Confirm Mailgun deliverability end to end (H4).
+- (Admin catalog/user/fulfillment UI is now in place; `admin/audit_logs` was removed.)
 
 **Soon after:**
 - Inventory/stock control to prevent overselling (B3).

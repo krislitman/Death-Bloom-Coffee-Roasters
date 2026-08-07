@@ -44,7 +44,11 @@ RSpec.describe "Coffees", type: :request do
   end
 
   describe "GET /coffees/:slug" do
-    let!(:coffee) { create(:coffee, :with_tasting_notes) }
+    let!(:coffee) do
+      create(:coffee, :with_tasting_notes,
+             name: "Ethiopia Guji", origin: "Ethiopia",
+             description: "A bright, clean cup.")
+    end
 
     it "returns 200" do
       get coffee_path(coffee)

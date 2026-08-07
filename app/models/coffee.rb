@@ -22,6 +22,14 @@ class Coffee < ApplicationRecord
     "$#{format('%.2f', price_cents / 100.0)}"
   end
 
+  def price
+    price_cents && price_cents / 100.0
+  end
+
+  def price=(dollars)
+    self.price_cents = dollars.blank? ? nil : (BigDecimal(dollars.to_s) * 100).round
+  end
+
   def to_param
     slug
   end

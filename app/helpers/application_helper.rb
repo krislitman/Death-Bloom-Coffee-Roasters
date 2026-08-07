@@ -1,5 +1,5 @@
 module ApplicationHelper
   def support_email
-    ENV.fetch("SUPPORT_EMAIL", "hello@deathbloomcoffee.com")
+    ENV.fetch("SUPPORT_EMAIL", "hello@deathbloomcoffeeroasters.com")
   end
 end
