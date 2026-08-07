@@ -13,13 +13,30 @@
       <p class="font-mono text-db-muted text-sm tracking-wide">You haven't placed any orders yet.</p>
       <%= link_to "Shop Coffee", coffees_path, class: "inline-block mt-6 px-8 py-3 border border-db-accent text-db-accent hover:bg-db-accent hover:text-db-bg transition-colors duration-300 text-xs tracking-widest uppercase font-mono" %>
     <% else %>
-      <%= datagrid_table_for @grid, @grid.assets, html: { class: "orders-table w-full" } do |column, asset| %>
-        <% if column.name == :actions %>
-          <%= link_to "View Order", order_path(asset), class: "font-mono text-db-accent text-xs tracking-widest uppercase hover:underline" %>
-        <% else %>
-          <%= datagrid_format_value(column, asset) %>
-        <% end %>
-      <% end %>
+      <table class="orders-table w-full">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Items</th>
+            <th>Placed On</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @grid.assets.each do |order| %>
+            <tr>
+              <td><%= order.order_number %></td>
+              <td><%= order.status.humanize %></td>
+              <td>$<%= '%.2f' % order.total %></td>
+              <td><%= order.order_items.sum(:quantity) %></td>
+              <td><%= order.created_at.strftime("%b %-d, %Y") %></td>
+              <td><%= link_to "View Order", order_path(order), class: "font-mono text-db-accent text-xs tracking-widest uppercase hover:underline" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     <% end %>
 
   </div>

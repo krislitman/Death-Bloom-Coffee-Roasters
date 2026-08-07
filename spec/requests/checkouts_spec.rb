@@ -41,6 +41,45 @@ RSpec.describe "Checkouts", type: :request do
       get success_checkout_path
       expect(response).to have_http_status(:ok)
     end
+
+    context "with a session_id whose order already exists" do
+      let(:order) { create(:order, :with_stripe_session) }
+
+      it "shows the existing order without calling Stripe" do
+        get success_checkout_path(session_id: order.stripe_checkout_session_id)
+        expect(response.body).to include(order.order_number)
+        expect(WebMock).not_to have_requested(:get, /api.stripe.com/)
+      end
+    end
+
+    context "with a paid session_id that has no order yet" do
+      let(:session_id) { "cs_test_reconcile" }
+
+      before do
+        Stripe.api_key = "sk_test_dummy"
+        cart = Cart.current_for(session_token: "reconcile_token")
+        create(:cart_item, cart: cart, coffee: coffee)
+        stub_stripe_session_retrieve(session_id: session_id, cart_id: cart.id, payment_status: "paid")
+      end
+
+      it "fulfills the order and shows its number" do
+        expect { get success_checkout_path(session_id: session_id) }.to change(Order, :count).by(1)
+        expect(response.body).to include(Order.last.order_number)
+      end
+    end
+
+    context "with an unpaid session_id" do
+      let(:session_id) { "cs_test_unpaid" }
+
+      before do
+        Stripe.api_key = "sk_test_dummy"
+        stub_stripe_session_retrieve(session_id: session_id, cart_id: "0", payment_status: "unpaid")
+      end
+
+      it "does not create an order" do
+        expect { get success_checkout_path(session_id: session_id) }.not_to change(Order, :count)
+      end
+    end
   end
 
   describe "GET /checkout/cancel" do
