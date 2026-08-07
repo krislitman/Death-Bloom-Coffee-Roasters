@@ -1,7 +1,7 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: <%= ENV.fetch("POSTGRES_HOST", "db") %>
   username: <%= ENV.fetch("POSTGRES_USER", "death_bloom") %>
   password: <%= ENV.fetch("POSTGRES_PASSWORD", "") %>
@@ -15,5 +15,7 @@ test:
   database: death_bloom_test
 
 production:
-  <<: *default
+  adapter: postgresql
+  encoding: unicode
   url: <%= ENV["DATABASE_URL"] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
