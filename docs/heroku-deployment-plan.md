@@ -286,7 +286,7 @@ heroku config:set \
   SUPPORT_EMAIL=hello@deathbloomcoffeeroasters.com \
   MAIL_FROM="Death Bloom Coffee <hello@deathbloomcoffeeroasters.com>"
 
-# Mailgun — required for boot (§1.4)
+# Mailgun — required for boot (§1.4). Sending domain is the mg. subdomain; see §8.1
 heroku config:set MAILGUN_API_KEY=... MAILGUN_DOMAIN=mg.deathbloomcoffeeroasters.com
 
 # Stripe — LIVE keys; webhook secret comes from §6
@@ -415,9 +415,39 @@ Then `heroku certs:auto` until status is `Cert issued`. `config.force_ssl = true
 set in `production.rb`, and `assume_ssl = true` is correct for Heroku's terminating proxy —
 both verified in the current code, no change needed.
 
-Mailgun also needs its own DNS records (SPF/DKIM on `mg.deathbloomcoffeeroasters.com`) before
-mail deliverability is trustworthy. Verify the domain in the Mailgun dashboard and send a real
-password-reset to a live inbox — including checking that it does not land in spam.
+### 8.1 Mailgun DNS
+
+The Mailgun sending domain is **`mg.deathbloomcoffeeroasters.com`** (added 2026-08-06), while
+outbound mail is sent **From `hello@deathbloomcoffeeroasters.com`** on the root domain.
+
+That split is deliberate. Mailgun signs with `d=mg.deathbloomcoffeeroasters.com`; DMARC's
+default DKIM alignment is relaxed (`adkim=r`), which only requires a matching *organizational*
+domain — so a root-domain `From` aligns with a subdomain signature and passes. Meanwhile
+Mailgun's bounce-handling MX records live on `mg.`, where they cannot collide with the Proton
+MX records the root domain needs to receive mail. Do not publish a DMARC policy with `adkim=s`
+— strict alignment would break this arrangement.
+
+All records go on `mg.deathbloomcoffeeroasters.com`; Mailgun's dashboard shows exact values:
+
+| Type | Host | Purpose |
+|---|---|---|
+| TXT | `mg` | SPF — `v=spf1 include:mailgun.org ~all` |
+| TXT | `k1._domainkey.mg` | DKIM public key |
+| MX | `mg` | `mxa.mailgun.org` (priority 10) — bounce handling |
+| MX | `mg` | `mxb.mailgun.org` (priority 10) — bounce handling |
+| CNAME | `email.mg` | open/click tracking (optional) |
+
+Root-domain DNS is untouched by this, including the Proton MX records.
+
+**Before launch:**
+1. Add the records, then click Verify in Mailgun until the domain reports verified.
+2. Create/route `hello@deathbloomcoffeeroasters.com` so it actually receives mail — customers
+   reply to order confirmations, and a bouncing reply address is worse than no reply address.
+3. Send a real password-reset and a real order confirmation to a live inbox on a different
+   provider (Gmail is the useful test), and confirm they land in the inbox rather than spam.
+4. Consider whether `SUPPORT_EMAIL` should also move from the Proton address to
+   `hello@deathbloomcoffeeroasters.com` — it is customer-facing on the terms and privacy pages
+   and used as Reply-To. Currently still the Proton address; left as-is pending a decision.
 
 ---
 
