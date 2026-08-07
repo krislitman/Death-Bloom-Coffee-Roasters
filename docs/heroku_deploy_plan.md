@@ -47,7 +47,7 @@ heroku config:set -a death-bloom \
   DEVISE_SECRET_KEY="$(bin/rails secret)" \
   APP_HOST="deathbloomcoffeeroasters.com" \
   SUPPORT_EMAIL="deathbloomcoffeeroasters@proton.me" \
-  MAIL_FROM="orders@deathbloomcoffeeroasters.com" \
+  MAIL_FROM="deathbloomcoffeeroasters@proton.me" \
   STRIPE_PUBLISHABLE_KEY="pk_live_…" \
   STRIPE_SECRET_KEY="sk_live_…" \
   STRIPE_WEBHOOK_SECRET="whsec_…"       `# from step 6, set after registering the endpoint` \
@@ -63,12 +63,18 @@ Notes:
   (forced to `https` in production) and `action_mailer.default_url_options`.
 - If the `google_auth` Flipper flag stays off, the Google vars can be placeholders,
   but omitting them entirely may raise at boot — set harmless placeholders if unused.
-- **Email identities:** `MAIL_FROM` is the technical `From:` and **must be on the
-  Mailgun sending domain** (`orders@deathbloomcoffeeroasters.com`) so DKIM/DMARC
-  align — otherwise confirmations land in spam or bounce. `SUPPORT_EMAIL`
-  (`deathbloomcoffeeroasters@proton.me`) is the customer-facing contact address shown
-  in emails and on the terms/privacy pages, and is set as the **Reply-To** on order
-  emails, so customer replies go straight to the Proton inbox.
+- **Email identities:** both `MAIL_FROM` (the `From:` header) and `SUPPORT_EMAIL`
+  (customer-facing contact + Reply-To) are set to `deathbloomcoffeeroasters@proton.me`
+  — everything runs from one inbox.
+  **Deliverability caveat:** Mailgun cannot DKIM-sign for `proton.me`, so mail sent
+  From this address via Mailgun is **not DMARC-aligned** and may be spam-filtered or
+  rejected by strict receivers. To fix without giving up the single-inbox setup, either:
+  (a) send outbound mail through **Proton's own SMTP** (Proton Mail Bridge / paid
+  business SMTP) instead of Mailgun, so the domain that signs the mail matches the
+  From; or (b) set `MAIL_FROM` back to an on-domain address like
+  `orders@deathbloomcoffeeroasters.com` (Mailgun-signed) while keeping `SUPPORT_EMAIL`
+  as the Proton Reply-To — replies still land in Proton. Verify inbox placement during
+  the smoke test (step 8) before relying on it.
 
 ---
 
