@@ -1,5 +1,6 @@
 class OrderMailer < ApplicationMailer
-  default from: ENV.fetch("SUPPORT_EMAIL", "hello@deathbloomcoffeeroasters.com")
+  default from:     ENV.fetch("MAIL_FROM", "orders@deathbloomcoffeeroasters.com"),
+          reply_to: ENV.fetch("SUPPORT_EMAIL", "deathbloomcoffeeroasters@proton.me")
 
   def confirmation(order)
     @order = order

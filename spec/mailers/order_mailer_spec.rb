@@ -23,6 +23,14 @@ RSpec.describe OrderMailer, type: :mailer do
       expect(mail.to).to eq([ "guest@example.com" ])
     end
 
+    it "sets a Reply-To so customer replies reach support" do
+      expect(mail.reply_to).to be_present
+    end
+
+    it "sends from a different address than it replies to" do
+      expect(mail.from).not_to eq(mail.reply_to)
+    end
+
     it "includes the order number in the subject" do
       expect(mail.subject).to include(order.order_number)
     end

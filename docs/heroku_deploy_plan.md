@@ -46,7 +46,8 @@ heroku config:set -a death-bloom \
   SECRET_KEY_BASE="$(bin/rails secret)" \
   DEVISE_SECRET_KEY="$(bin/rails secret)" \
   APP_HOST="deathbloomcoffeeroasters.com" \
-  SUPPORT_EMAIL="hello@deathbloomcoffeeroasters.com" \
+  SUPPORT_EMAIL="deathbloomcoffeeroasters@proton.me" \
+  MAIL_FROM="orders@deathbloomcoffeeroasters.com" \
   STRIPE_PUBLISHABLE_KEY="pk_live_…" \
   STRIPE_SECRET_KEY="sk_live_…" \
   STRIPE_WEBHOOK_SECRET="whsec_…"       `# from step 6, set after registering the endpoint` \
@@ -62,6 +63,12 @@ Notes:
   (forced to `https` in production) and `action_mailer.default_url_options`.
 - If the `google_auth` Flipper flag stays off, the Google vars can be placeholders,
   but omitting them entirely may raise at boot — set harmless placeholders if unused.
+- **Email identities:** `MAIL_FROM` is the technical `From:` and **must be on the
+  Mailgun sending domain** (`orders@deathbloomcoffeeroasters.com`) so DKIM/DMARC
+  align — otherwise confirmations land in spam or bounce. `SUPPORT_EMAIL`
+  (`deathbloomcoffeeroasters@proton.me`) is the customer-facing contact address shown
+  in emails and on the terms/privacy pages, and is set as the **Reply-To** on order
+  emails, so customer replies go straight to the Proton inbox.
 
 ---
 
