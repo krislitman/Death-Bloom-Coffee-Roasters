@@ -384,16 +384,37 @@ signature against `STRIPE_WEBHOOK_SECRET` before trusting the payload.
 
 ## 7. Google OAuth
 
-Add the production redirect URI to the Google Cloud console OAuth client:
+The callback path is `/users/auth/google_oauth2/callback`, confirmed against
+`bin/rails routes` (`user_google_oauth2_omniauth_callback`). Add these as **Authorized
+redirect URIs** on the Google Cloud console OAuth client. Google matches them exactly — no
+wildcards, no trailing slash, scheme and port significant:
 
 ```
 https://deathbloomcoffeeroasters.com/users/auth/google_oauth2/callback
 https://www.deathbloomcoffeeroasters.com/users/auth/google_oauth2/callback
+http://localhost:3000/users/auth/google_oauth2/callback
 ```
 
-Add the apex domain to Authorized JavaScript origins. Sign-in silently fails with
-`redirect_uri_mismatch` until these are registered — do it before the domain goes live, not
-after the first customer reports it.
+Add `www` only if it serves the app rather than redirecting to the apex. `localhost` covers
+Docker development — Google allows plain `http` and non-default ports for `localhost` only.
+
+Add the Heroku default domain **temporarily**, so sign-in can be smoke-tested during §5 before
+DNS cutover, and remove it once the custom domain is live:
+
+```
+https://death-bloom-coffee-<hash>.herokuapp.com/users/auth/google_oauth2/callback
+```
+
+**Authorized JavaScript origins are not required.** `omniauth-google-oauth2` is a server-side
+redirect flow — the browser never calls Google's token endpoint from the page — so the redirect
+URIs above are sufficient. Origins only matter for browser-side Google Identity Services.
+
+OmniAuth builds the callback URL from the **request host**, not from `APP_HOST`. That is why
+testing on `herokuapp.com` needs its own registered URI even while `APP_HOST` is set to the
+custom domain.
+
+Sign-in fails with `redirect_uri_mismatch` until these are registered — do it before the domain
+goes live, not after the first customer reports it.
 
 ---
 
