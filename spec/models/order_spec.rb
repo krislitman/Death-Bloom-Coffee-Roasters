@@ -70,6 +70,43 @@ RSpec.describe Order, type: :model do
     end
   end
 
+  describe "fulfillment timestamps" do
+    context "when status changes to shipped" do
+      it "stamps shipped_at" do
+        order = create(:order, status: :processing)
+        expect { order.update!(status: :shipped) }.to change(order, :shipped_at).from(nil)
+      end
+
+      it "does not overwrite an existing shipped_at" do
+        shipped = create(:order, status: :shipped)
+        original = shipped.shipped_at
+        shipped.update!(carrier: "UPS")
+        expect(shipped.reload.shipped_at).to be_within(1.second).of(original)
+      end
+    end
+
+    context "when status changes to delivered" do
+      it "stamps delivered_at" do
+        order = create(:order, status: :shipped)
+        expect { order.update!(status: :delivered) }.to change(order, :delivered_at).from(nil)
+      end
+
+      it "backfills shipped_at if it was never set" do
+        order = create(:order, status: :processing)
+        order.update!(status: :delivered)
+        expect(order.shipped_at).to be_present
+      end
+    end
+
+    context "when status stays processing" do
+      it "leaves the timestamps nil" do
+        order = create(:order, status: :processing)
+        order.update!(carrier: "USPS")
+        expect(order.shipped_at).to be_nil
+      end
+    end
+  end
+
   describe "#tracked?" do
     context "without a tracking number" do
       it "returns false" do

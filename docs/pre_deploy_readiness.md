@@ -30,13 +30,12 @@ Severity key: **BLOCKER** (breaks the flow or loses money/data),
 
 ### BLOCKER
 
-- **B1 — Admin namespace is largely unimplemented.** `config/routes.rb` declares
-  `admin/orders`, `admin/users`, `admin/coffees`, and `admin/audit_logs`, but only
-  `admin/base`, `admin/dashboard`, and `admin/features` controllers exist. Every
-  other admin route 500s. Consequence: **there is no way to mark an order shipped,
-  attach a tracking number, or manage the catalog** — the order lifecycle is stuck
-  at `processing` forever. Either implement these controllers or remove the routes
-  before launch.
+- **B1 — Admin namespace is partially implemented.** `admin/orders` fulfillment UI
+  now exists (index/show/update: set status + carrier + tracking number, auto-stamps
+  `shipped_at`/`delivered_at`), so orders can be fulfilled and tracked end to end.
+  Still missing: `admin/users`, `admin/coffees`, and `admin/audit_logs` controllers —
+  those routes still 500. No admin UI to add or edit coffees means the catalog is
+  seed/console-managed for now. Implement or remove those three route sets before launch.
 
 - **B2 — No shipping integration.** The architecture names EasyPost, but nothing is
   wired. Combined with B1, an order can be paid but never fulfilled or tracked from
