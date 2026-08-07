@@ -1,6 +1,11 @@
 # Heroku Deployment Plan — Death Bloom Coffee Roasters
 
-Status: **Plan — not yet executed.** No application code has been changed by this document.
+Status: **§1 blockers fixed in code (2026-08-06). §3–§10 still to run** — they need Heroku,
+Stripe, Google, and registrar credentials.
+
+Suite after the fixes: **197 of 198 examples passing.** The single failure
+(`spec/models/coffee_spec.rb:18` — the spec expects five roast levels, `Coffee` defines three)
+is pre-existing and unrelated to this work; neither file was touched.
 
 Target: Rails 8.1 app on Heroku Cedar / `heroku-24` stack with the custom domain
 `deathbloomcoffeeroasters.com`, PostgreSQL (Heroku Postgres), Mailgun for mail, Stripe
@@ -13,7 +18,7 @@ Checkout for payments, Google OAuth for sign-in, Flipper for feature flags.
 These will fail a deploy — or silently misbehave — as the code stands today. They must be
 fixed before the first `git push heroku`.
 
-### 1.1 Ruby version is not available on Heroku — **hard blocker**
+### 1.1 Ruby version is not available on Heroku — **FIXED**
 
 - `.ruby-version` pins `4.0.2`.
 - `Gemfile` has **no `ruby` directive**, and `Gemfile.lock` has **no `RUBY VERSION` section**.
@@ -38,9 +43,12 @@ ruby "4.0.6"
 Then `bundle update --ruby` (or `bundle install`) to write the `RUBY VERSION` block into
 `Gemfile.lock`, and commit the lock. Rebuild the Docker image locally so dev matches prod.
 
-**Verify:** `grep -A2 "^RUBY VERSION" Gemfile.lock` returns `ruby 4.0.6`.
+**Done:** `Gemfile` declares `ruby "4.0.6"`, `.ruby-version` is `4.0.6`, `Dockerfile`'s
+`ARG RUBY_VERSION` is `4.0.6`, and `Gemfile.lock` now carries a `RUBY VERSION` block. The
+lockfile diff is that block and nothing else — no gem versions moved. Ruby 4.0.6 was already
+installed under rbenv, and the full suite was re-run on it.
 
-### 1.2 `Procfile` starts a Dart Sass **watcher** as a production dyno — **hard blocker**
+### 1.2 `Procfile` started a Dart Sass **watcher** as a production dyno — **FIXED**
 
 ```
 web: bundle exec puma -C config/puma.rb
@@ -60,7 +68,7 @@ web: bundle exec puma -C config/puma.rb
 release: bundle exec rails db:migrate
 ```
 
-### 1.3 `config/database.yml` leaks development connection settings into production
+### 1.3 `config/database.yml` leaked development connection settings into production — **FIXED**
 
 ```yaml
 default: &default
@@ -101,7 +109,7 @@ And correct `max_connections` → `pool` in the `default` anchor for dev/test.
 **Verify after deploy:** `heroku run rails runner 'puts ActiveRecord::Base.connection_db_config.configuration_hash.except(:password).inspect'`
 should show the Heroku Postgres host, not `db`.
 
-### 1.4 `production.rb` uses `ENV.fetch` with no default for Mailgun — boot-time crash
+### 1.4 `production.rb` uses `ENV.fetch` with no default for Mailgun — **open: set config vars**
 
 ```ruby
 config.action_mailer.mailgun_settings = {
@@ -123,7 +131,7 @@ missing-config problem.
 
 This plan assumes the preferred option: **config vars are set before the first push.**
 
-### 1.5 `db/seeds.rb` creates a hardcoded admin — must never run as-is in production
+### 1.5 `db/seeds.rb` created a hardcoded admin — **FIXED**
 
 ```ruby
 admin = User.find_or_initialize_by(email: "admin@dev.com")
@@ -139,32 +147,62 @@ Seeds are otherwise genuinely needed in production — the Flipper flags
 (`subscriptions`, `admin_tools`, `announcement_bar`, `maintenance_mode`, `newsletter`,
 `google_auth`) and the tasting-note vocabulary must exist.
 
-**Fix:** split the seed file so the admin block is environment-aware and credential-driven:
+**Done:** the monolithic seed file is split into `db/seeds/`, and `db/seeds.rb` composes them,
+choosing what runs by environment:
+
+```
+db/seeds.rb                     orchestrator — loads the files below
+db/seeds/coffee_seeder.rb       seed_coffee helper, shared by both catalog files
+db/seeds/feature_flags.rb       all envs — the six Flipper flags
+db/seeds/tasting_notes.rb       all envs — the tasting-note vocabulary
+db/seeds/coffees.rb             all envs — Edwin Norena light / medium / dark
+db/seeds/admin.rb               all envs — credentials differ by environment
+db/seeds/demo_coffees.rb        dev + test ONLY — Midnight Sun, Aurora Washed, Dark Hollow
+```
+
+Production therefore launches with the **three real Edwin Norena roasts** and no placeholder
+product. The three demo coffees are unreachable in production: `db/seeds.rb` only appends
+`demo_coffees` to the load list when `Rails.env` is not production.
+
+The admin block resolves its credentials from the environment and, critically, **only sets the
+password on a new record** — so re-seeding a live app never silently resets a rotated admin
+password:
 
 ```ruby
-# db/seeds.rb — admin section
-if Rails.env.production?
-  email = ENV["ADMIN_EMAIL"]
-  password = ENV["ADMIN_PASSWORD"]
-  if email.present? && password.present?
-    admin = User.find_or_initialize_by(email: email)
-    admin.assign_attributes(password: password, password_confirmation: password, role: :admin)
-    admin.save!
+email, password =
+  if Rails.env.production?
+    [ ENV["ADMIN_EMAIL"], ENV["ADMIN_PASSWORD"] ]
+  else
+    [ "admin@dev.com", "admindev123" ]
   end
-else
-  # existing admin@dev.com block
+
+if email.present? && password.present?
+  admin = User.find_or_initialize_by(email: email)
+
+  if admin.new_record?
+    admin.password              = password
+    admin.password_confirmation = password
+  end
+
+  admin.role = :admin
+  admin.save!
 end
 ```
+
+With no `ADMIN_EMAIL`/`ADMIN_PASSWORD` set, production seeding creates **no admin at all** and
+says so — it does not fall back to anything.
 
 Set `ADMIN_EMAIL` / `ADMIN_PASSWORD` as config vars for the single seed run, then
 `heroku config:unset ADMIN_PASSWORD` immediately afterward and rotate the password through
 the app's own password-reset flow.
 
-**Spec to add (TDD, per project workflow):** a request or model spec asserting that
-`User.exists?(email: "admin@dev.com")` is false after seeding with `Rails.env` stubbed to
-production. This is the one piece of §1 that carries a test.
+**Specs:** `spec/db/seeds_spec.rb`, written before the implementation and confirmed failing
+first (5 failures, all on the production-safety expectations). 13 examples now green, covering:
+no `admin@dev.com` in production; no demo coffees in production; the Edwin Norena lots and
+flags and tasting notes present; admin created from env credentials; **no** admin created when
+they are absent; an existing admin's password left untouched; and idempotency across two runs.
 
-### 1.6 Secrets: `RAILS_MASTER_KEY` and `DEVISE_SECRET_KEY`
+### 1.6 Secrets: `RAILS_MASTER_KEY` and `DEVISE_SECRET_KEY` — **open: set config vars**
 
 - `config/master.key` is correctly gitignored (verified) and `config/credentials.yml.enc` is
   committed. Heroku therefore **must** receive `RAILS_MASTER_KEY`, or credentials decryption
@@ -386,9 +424,9 @@ password-reset to a live inbox — including checking that it does not land in s
 ## 9. Execution order
 
 ```
-[1] Fix blockers §1.1–§1.6 on a feature branch  ← code changes, spec for §1.5 first
-[2] bundle update --ruby; docker compose build; bundle exec rspec  (all green)
-[3] PR → review → merge to main
+[1] DONE — code fixes for §1.1, §1.2, §1.3, §1.5 (spec-first)
+[2] DONE — Gemfile.lock RUBY VERSION regenerated; suite re-run on Ruby 4.0.6
+[3] PR → review → merge to main; rebuild the Docker dev image (RUBY_VERSION changed)
 [4] Install Heroku CLI, create app + Postgres  (§3)
 [5] Set every config var  (§4)  ← before any push
 [6] git push heroku main; verify /up, DB, credentials  (§5)
@@ -427,16 +465,27 @@ Schedule daily backups before launch: `heroku pg:backups:schedule DATABASE_URL -
 
 ## Appendix — files this plan changes
 
+All changed — this is what the branch actually contains.
+
 | File | Change | Why |
 |---|---|---|
-| `Gemfile` | add `ruby "4.0.6"` | §1.1 |
-| `Gemfile.lock` | regenerated `RUBY VERSION` block | §1.1 |
+| `Gemfile` | added `ruby "4.0.6"` | §1.1 |
+| `Gemfile.lock` | `RUBY VERSION` block added (only change; no gem churn) | §1.1 |
 | `.ruby-version` | `4.0.2` → `4.0.6` | §1.1 |
-| `Procfile` | remove `css:` watcher line | §1.2 |
+| `Dockerfile` | `ARG RUBY_VERSION` `4.0.2` → `4.0.6` | §1.1 |
+| `Procfile` | removed the `css:` watcher line | §1.2 |
 | `config/database.yml` | `max_connections` → `pool`; standalone production block | §1.3 |
-| `db/seeds.rb` | environment-aware admin seeding | §1.5 |
-| `spec/` | seed spec asserting no dev admin in production | §1.5 |
-| `.env.example` | add `MAIL_FROM`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`; correct `APP_HOST` domain | §4 |
+| `db/seeds.rb` | now an environment-aware orchestrator | §1.5 |
+| `db/seeds/*.rb` | six new files (see §1.5) | §1.5 |
+| `spec/db/seeds_spec.rb` | new — 13 examples, spec-first | §1.5 |
+| `.env.example` | added `ADMIN_EMAIL`, `ADMIN_PASSWORD` | §1.5 |
 
-No changes are required to `config/environments/production.rb` (SSL, logging, mailer,
-health-check silencing are all already correct), `config/puma.rb`, or `config/routes.rb`.
+No changes were required to `config/environments/production.rb` (SSL, logging, mailer, and
+health-check silencing are already correct), `config/puma.rb`, or `config/routes.rb`.
+
+**One gotcha worth knowing:** `app/assets/builds/` is gitignored, so a fresh clone or worktree
+has no compiled CSS and every view-rendering spec fails with
+`Propshaft::MissingAssetError: The asset 'tailwind.css' was not found`. Run
+`bin/rails dartsass:build tailwindcss:build` (or `docker compose up`) before the suite. This
+does not affect Heroku — the buildpack's `assets:precompile` runs both builds during slug
+compilation.
