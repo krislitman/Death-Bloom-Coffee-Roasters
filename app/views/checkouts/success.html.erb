@@ -3,7 +3,14 @@
 <div class="checkout-confirmation">
   <h1>Order confirmed</h1>
   <p>Your Death Bloom Coffee is on its way. A confirmation email has been sent with your order details.</p>
-  <% if params[:session_id].present? %>
+  <% if @order %>
+    <p class="confirmation-note">Order number: <strong><%= @order.order_number %></strong></p>
+    <% if user_signed_in? %>
+      <%= link_to "Track your order", order_path(@order), class: "btn btn--secondary" %>
+    <% else %>
+      <%= link_to "Track your order", order_lookup_path, class: "btn btn--secondary" %>
+    <% end %>
+  <% elsif params[:session_id].present? %>
     <p class="confirmation-note">Ref: <%= params[:session_id] %></p>
   <% end %>
   <%= link_to "Continue shopping", coffees_path, class: "btn btn--secondary" %>

@@ -69,4 +69,40 @@ RSpec.describe Order, type: :model do
       expect(order.total).to eq(18.0)
     end
   end
+
+  describe "#tracked?" do
+    context "without a tracking number" do
+      it "returns false" do
+        expect(build(:order, tracking_number: nil)).not_to be_tracked
+      end
+    end
+
+    context "with a tracking number" do
+      it "returns true" do
+        expect(build(:order, tracking_number: "1Z999")).to be_tracked
+      end
+    end
+  end
+
+  describe "#tracking_url" do
+    context "without a tracking number" do
+      it "returns nil" do
+        expect(build(:order, tracking_number: nil).tracking_url).to be_nil
+      end
+    end
+
+    context "with a known carrier" do
+      it "builds the carrier tracking URL" do
+        order = build(:order, carrier: "UPS", tracking_number: "1Z999AA10123456784")
+        expect(order.tracking_url).to eq("https://www.ups.com/track?tracknum=1Z999AA10123456784")
+      end
+    end
+
+    context "with an unknown carrier" do
+      it "returns nil" do
+        order = build(:order, carrier: "PonyExpress", tracking_number: "ABC123")
+        expect(order.tracking_url).to be_nil
+      end
+    end
+  end
 end

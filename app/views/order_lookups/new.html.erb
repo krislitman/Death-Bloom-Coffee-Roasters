@@ -1,0 +1,36 @@
+<% content_for :title, "Track Your Order" %>
+
+<div class="page-header zone--dark">
+  <div class="container">
+    <p class="font-mono text-db-accent text-xs tracking-widest uppercase mb-2">Order Tracking</p>
+    <h1 class="page-header__heading">Track your order</h1>
+  </div>
+</div>
+
+<section class="zone--dark bg-db-bg">
+  <div class="container max-w-[640px] mx-auto px-[clamp(1.25rem,4vw,3rem)] py-16">
+
+    <% if flash[:alert] %>
+      <p class="font-mono text-sm text-db-accent mb-8 tracking-wide"><%= flash[:alert] %></p>
+    <% end %>
+
+    <p class="font-mono text-db-muted text-sm tracking-wide mb-8">
+      Enter the order number from your confirmation email and the email address you used at checkout.
+    </p>
+
+    <%= form_with url: order_lookup_path, method: :post do %>
+      <div class="mb-6">
+        <%= label_tag :order_number, "Order Number", class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+        <%= text_field_tag :order_number, params[:order_number], placeholder: "DB-XXXXXX",
+              class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+      </div>
+      <div class="mb-8">
+        <%= label_tag :email, "Email", class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+        <%= email_field_tag :email, params[:email], placeholder: "you@example.com",
+              class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+      </div>
+      <%= submit_tag "Find Order", class: "px-8 py-3 border border-db-accent text-db-accent hover:bg-db-accent hover:text-db-bg transition-colors duration-300 text-xs tracking-widest uppercase font-mono cursor-pointer" %>
+    <% end %>
+
+  </div>
+</section>

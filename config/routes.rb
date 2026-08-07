@@ -29,6 +29,10 @@ Rails.application.routes.draw do
   # Stripe webhooks (no CSRF — verified via Stripe signature)
   post "/webhooks/stripe", to: "webhooks/stripe#receive"
 
+  # Public order tracking for guests (order number + email)
+  get  "/orders/lookup", to: "order_lookups#new",    as: :order_lookup
+  post "/orders/lookup", to: "order_lookups#create", as: nil
+
   # Authenticated user routes
   authenticate :user do
     resources :orders,  only: [:index, :show]
