@@ -1,0 +1,44 @@
+<% content_for :title, "Orders" %>
+
+<div class="admin-page zone--dark">
+  <div class="container">
+    <div class="admin-page__header">
+      <%= link_to "← Dashboard", admin_root_path, class: "admin-page__back" %>
+      <h1 class="admin-page__heading">Orders</h1>
+      <p class="admin-page__subheading">
+        <%= pluralize(@orders.size, "order") %> · most recent first
+      </p>
+    </div>
+
+    <% if @orders.any? %>
+      <table class="orders-table w-full">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Placed</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Items</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr>
+              <td><%= order.order_number %></td>
+              <td><%= order.created_at.strftime("%b %-d, %Y") %></td>
+              <td><%= order.email %></td>
+              <td><%= order.status.humanize %></td>
+              <td>$<%= '%.2f' % order.total %></td>
+              <td><%= order.order_items.sum(:quantity) %></td>
+              <td><%= link_to "Manage", admin_order_path(order), class: "font-mono text-db-accent text-xs tracking-widest uppercase hover:underline" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="admin-page__empty">No orders yet.</p>
+    <% end %>
+  </div>
+</div>

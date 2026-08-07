@@ -1,0 +1,12 @@
+<% content_for :title, "New Coffee" %>
+
+<div class="admin-page zone--dark">
+  <div class="container">
+    <div class="admin-page__header">
+      <%= link_to "← Coffees", admin_coffees_path, class: "admin-page__back" %>
+      <h1 class="admin-page__heading">New Coffee</h1>
+    </div>
+
+    <%= render "form", coffee: @coffee, submit_label: "Create Coffee" %>
+  </div>
+</div>

@@ -8,6 +8,33 @@
     </div>
 
     <div class="admin-grid">
+      <%= link_to admin_orders_path, class: "admin-card" do %>
+        <div class="admin-card__icon" aria-hidden="true">✦</div>
+        <h2 class="admin-card__title">Orders</h2>
+        <p class="admin-card__description">
+          View orders and fulfill them — set status, carrier, and tracking number.
+        </p>
+        <span class="admin-card__cta">Manage orders →</span>
+      <% end %>
+
+      <%= link_to admin_coffees_path, class: "admin-card" do %>
+        <div class="admin-card__icon" aria-hidden="true">☕</div>
+        <h2 class="admin-card__title">Coffees</h2>
+        <p class="admin-card__description">
+          Add, edit, and retire coffees — pricing, roast, and tasting notes.
+        </p>
+        <span class="admin-card__cta">Manage catalog →</span>
+      <% end %>
+
+      <%= link_to admin_users_path, class: "admin-card" do %>
+        <div class="admin-card__icon" aria-hidden="true">◍</div>
+        <h2 class="admin-card__title">Users</h2>
+        <p class="admin-card__description">
+          View customers and manage admin access.
+        </p>
+        <span class="admin-card__cta">Manage users →</span>
+      <% end %>
+
       <%= link_to admin_features_path, class: "admin-card" do %>
         <div class="admin-card__icon" aria-hidden="true">⚑</div>
         <h2 class="admin-card__title">Feature Manager</h2>

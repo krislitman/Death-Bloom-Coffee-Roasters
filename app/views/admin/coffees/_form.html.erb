@@ -1,0 +1,78 @@
+<%= form_with model: [:admin, coffee] do |f| %>
+  <% if coffee.errors.any? %>
+    <div class="mb-8 border border-db-accent p-4 font-mono text-sm text-db-accent">
+      <p class="mb-2"><%= pluralize(coffee.errors.count, "error") %> prevented saving:</p>
+      <ul class="list-disc list-inside">
+        <% coffee.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid gap-6 max-w-2xl">
+    <div>
+      <%= f.label :name, class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+      <%= f.text_field :name, class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+    </div>
+
+    <div>
+      <%= f.label :origin, class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+      <%= f.text_field :origin, class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <%= f.label :roast_level, "Roast", class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+        <%= f.select :roast_level, Coffee.roast_levels.keys.map { |r| [r.humanize, r] }, {},
+              class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+      </div>
+      <div>
+        <%= f.label :price, "Price (USD)", class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+        <%= f.number_field :price, step: "0.01", min: "0", value: coffee.price,
+              class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <%= f.label :processing, class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+        <%= f.text_field :processing, placeholder: "Washed", class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+      </div>
+      <div>
+        <%= f.label :position, class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+        <%= f.number_field :position, class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :description, class: "block font-mono text-db-muted text-xs tracking-widest uppercase mb-2" %>
+      <%= f.text_area :description, rows: 4, class: "w-full bg-transparent border border-db-border text-db-text font-mono px-4 py-3 focus:border-db-accent focus:outline-none" %>
+    </div>
+
+    <div>
+      <span class="block font-mono text-db-muted text-xs tracking-widest uppercase mb-2">Tasting Notes</span>
+      <div class="flex flex-wrap gap-3">
+        <% TastingNote.order(:name).each do |note| %>
+          <label class="font-mono text-db-text text-xs tracking-wide flex items-center gap-2">
+            <%= check_box_tag "coffee[tasting_note_ids][]", note.id, coffee.tasting_note_ids.include?(note.id) %>
+            <%= note.name.capitalize %>
+          </label>
+        <% end %>
+      </div>
+      <%= hidden_field_tag "coffee[tasting_note_ids][]", "" %>
+    </div>
+
+    <div>
+      <label class="font-mono text-db-text text-xs tracking-widest uppercase flex items-center gap-2">
+        <%= f.check_box :active %>
+        Active (visible in shop)
+      </label>
+    </div>
+
+    <div class="flex items-center gap-6 pt-4">
+      <%= f.submit submit_label, class: "btn btn--primary btn--sm" %>
+      <%= link_to "Cancel", admin_coffees_path, class: "font-mono text-db-muted text-xs tracking-widest uppercase hover:text-db-text" %>
+    </div>
+  </div>
+<% end %>

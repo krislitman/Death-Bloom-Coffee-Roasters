@@ -43,11 +43,10 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#index"
 
-    resources :features,   only: [:index, :update]
-    resources :users,      only: [:index, :show, :edit, :update]
-    resources :coffees,    except: [:show]
-    resources :orders,     only: [:index, :show, :update]
-    resources :audit_logs, only: [:index]
+    resources :features, only: [:index, :update]
+    resources :users,    only: [:index, :show, :edit, :update]
+    resources :coffees,  except: [:show]
+    resources :orders,   only: [:index, :show, :update]
   end
 
   # Flipper UI — protected behind admin constraint

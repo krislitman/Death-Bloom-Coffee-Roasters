@@ -65,4 +65,24 @@ RSpec.describe Coffee, type: :model do
       expect(coffee.formatted_price).to eq("$18.50")
     end
   end
+
+  describe "#price" do
+    it "returns price_cents as dollars" do
+      expect(build(:coffee, price_cents: 1850).price).to eq(18.5)
+    end
+  end
+
+  describe "#price=" do
+    it "stores dollars as cents" do
+      coffee = build(:coffee)
+      coffee.price = "18.50"
+      expect(coffee.price_cents).to eq(1850)
+    end
+
+    it "rounds to the nearest cent" do
+      coffee = build(:coffee)
+      coffee.price = "18.999"
+      expect(coffee.price_cents).to eq(1900)
+    end
+  end
 end

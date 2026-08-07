@@ -1,0 +1,58 @@
+<% content_for :title, @user.email %>
+
+<div class="admin-page zone--dark">
+  <div class="container">
+    <div class="admin-page__header">
+      <%= link_to "← Users", admin_users_path, class: "admin-page__back" %>
+      <p class="admin-page__eyebrow"><%= @user.role.humanize %></p>
+      <h1 class="admin-page__heading"><%= @user.email %></h1>
+    </div>
+
+    <% if notice %>
+      <p class="font-mono text-db-accent text-sm tracking-wide mb-8"><%= notice %></p>
+    <% end %>
+
+    <div class="mb-10 flex flex-wrap gap-8 font-mono text-xs tracking-widest uppercase text-db-muted">
+      <div>
+        <p class="mb-1">Joined</p>
+        <p class="text-db-text"><%= @user.created_at.strftime("%B %-d, %Y") %></p>
+      </div>
+      <div>
+        <p class="mb-1">Sign-in Count</p>
+        <p class="text-db-text"><%= @user.sign_in_count %></p>
+      </div>
+      <div>
+        <p class="mb-1">Last Seen</p>
+        <p class="text-db-text"><%= @user.last_sign_in_at&.strftime("%b %-d, %Y") || "—" %></p>
+      </div>
+    </div>
+
+    <%= link_to "Edit Role", edit_admin_user_path(@user), class: "btn btn--primary btn--sm" %>
+
+    <h2 class="font-mono text-db-muted text-xs tracking-widest uppercase mt-12 mb-6">Orders</h2>
+    <% if @orders.any? %>
+      <table class="orders-table w-full">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Placed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr>
+              <td><%= link_to order.order_number, admin_order_path(order), class: "text-db-accent hover:underline" %></td>
+              <td><%= order.status.humanize %></td>
+              <td>$<%= '%.2f' % order.total %></td>
+              <td><%= order.created_at.strftime("%b %-d, %Y") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="admin-page__empty">No orders.</p>
+    <% end %>
+  </div>
+</div>

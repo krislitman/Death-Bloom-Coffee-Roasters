@@ -10,6 +10,7 @@ class Order < ApplicationRecord
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   before_validation :assign_order_number, on: :create
+  before_save :stamp_fulfillment_timestamps, if: :status_changed?
 
   CARRIER_TRACKING_URLS = {
     "usps"  => "https://tools.usps.com/go/TrackConfirmAction?tLabels=%s",
@@ -36,5 +37,10 @@ class Order < ApplicationRecord
 
   def assign_order_number
     self.order_number ||= "DB-#{SecureRandom.hex(3).upcase}"
+  end
+
+  def stamp_fulfillment_timestamps
+    self.shipped_at   ||= Time.current if shipped? || delivered?
+    self.delivered_at ||= Time.current if delivered?
   end
 end
