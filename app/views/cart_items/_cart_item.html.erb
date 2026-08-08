@@ -4,6 +4,8 @@
     <span class="cart-item__price"><%= number_to_currency(cart_item.coffee.price_cents / 100.0) %></span>
   </div>
 
+  <% ceiling = Flipper.enabled?(:inventory) ? [cart_item.coffee.available_stock, 10].min : 10 %>
+
   <div class="cart-item__controls">
     <div class="cart-item__quantity">
       <%= button_to "−", cart_cart_item_path(cart_item), method: :patch,
@@ -13,10 +15,10 @@
           disabled: cart_item.quantity <= 1 %>
       <span class="cart-item__qty-display"><%= cart_item.quantity %></span>
       <%= button_to "+", cart_cart_item_path(cart_item), method: :patch,
-          params: { cart_item: { quantity: [cart_item.quantity + 1, 10].min, coffee_id: cart_item.coffee_id } },
+          params: { cart_item: { quantity: [cart_item.quantity + 1, ceiling].min, coffee_id: cart_item.coffee_id } },
           class: "cart-item__qty-btn",
           data: { turbo_stream: true },
-          disabled: cart_item.quantity >= 10 %>
+          disabled: cart_item.quantity >= ceiling %>
     </div>
   </div>
 

@@ -2,8 +2,9 @@ edwin_norena = {
   origin:        "Colombia",
   processing:    "Carbonic Honey, Peach Co-ferment",
   description:   "A 12 oz Colombian lot named for its cultivator, Edwin Norena.",
-  price_cents:   1999,
-  tasting_notes: [ "stone fruit", "honey", "floral brightness" ]
+  price_cents:    1999,
+  stock_quantity: 24,
+  tasting_notes:  [ "stone fruit", "honey", "floral brightness" ]
 }
 
 [

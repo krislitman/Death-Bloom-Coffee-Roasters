@@ -34,6 +34,41 @@ RSpec.describe "Checkouts", type: :request do
         expect(response).to redirect_to(cart_path)
       end
     end
+
+    context "when an item went out of stock before checkout" do
+      before do
+        cart_with_item
+        coffee.update!(stock_quantity: 0)
+        allow_any_instance_of(ApplicationController).to receive(:guest_session_token).and_return("guest_token_test")
+        stub_stripe_checkout_session_create
+      end
+
+      context "and the inventory flag is enabled" do
+        before { Flipper.enable(:inventory) }
+
+        it "redirects back to the cart" do
+          post checkout_path
+          expect(response).to redirect_to(cart_path)
+        end
+
+        it "names the offending coffee in the alert" do
+          post checkout_path
+          expect(flash[:alert]).to include(coffee.name)
+        end
+
+        it "does not create a Stripe Checkout Session" do
+          post checkout_path
+          expect(WebMock).not_to have_requested(:post, "https://api.stripe.com/v1/checkout/sessions")
+        end
+      end
+
+      context "and the inventory flag is disabled" do
+        it "proceeds to Stripe as before" do
+          post checkout_path
+          expect(response).to redirect_to(StripeHelpers::STRIPE_SESSION_URL)
+        end
+      end
+    end
   end
 
   describe "GET /checkout/success" do

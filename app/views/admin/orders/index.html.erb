@@ -29,7 +29,12 @@
               <td><%= order.order_number %></td>
               <td><%= order.created_at.strftime("%b %-d, %Y") %></td>
               <td><%= order.email %></td>
-              <td><%= order.status.humanize %></td>
+              <td>
+                <%= order.status.humanize %>
+                <% if order.oversold? %>
+                  <span class="font-mono text-db-accent text-[0.64rem] tracking-widest uppercase ml-2">Oversold</span>
+                <% end %>
+              </td>
               <td>$<%= '%.2f' % order.total %></td>
               <td><%= order.order_items.sum(:quantity) %></td>
               <td><%= link_to "Manage", admin_order_path(order), class: "font-mono text-db-accent text-xs tracking-widest uppercase hover:underline" %></td>

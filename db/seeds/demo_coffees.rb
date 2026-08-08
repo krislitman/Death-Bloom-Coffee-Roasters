@@ -7,6 +7,7 @@
     description:   "A well-balanced medium roast with notes of chocolate and caramel.",
     price_cents:   1800,
     position:      3,
+    stock_quantity: 24,
     tasting_notes: [ "chocolate", "caramel", "brown sugar" ]
   },
   {
@@ -16,6 +17,7 @@
     description:   "A vibrant light roast bursting with citrus brightness and delicate floral notes.",
     price_cents:   1950,
     position:      4,
+    stock_quantity: 24,
     tasting_notes: [ "citrus", "jasmine", "blueberry" ]
   },
   {
@@ -25,6 +27,7 @@
     description:   "A bold, full-bodied dark roast with deep earthy warmth and a long smoky finish.",
     price_cents:   1700,
     position:      5,
+    stock_quantity: 24,
     tasting_notes: [ "chocolate", "vanilla", "hazelnut" ]
   }
 ].each { |attrs| seed_coffee(attrs) }

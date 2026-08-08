@@ -45,10 +45,22 @@ RSpec.describe "db/seeds" do
       expect(Coffee.where(name: edwin_norena_names).count).to eq 3
     end
 
+    it "gives the Edwin Norena coffees stock" do
+      load_seeds
+
+      expect(Coffee.where(name: edwin_norena_names).pluck(:stock_quantity)).to all(be_positive)
+    end
+
+    it "leaves the inventory flag disabled" do
+      load_seeds
+
+      expect(Flipper.enabled?(:inventory)).to be false
+    end
+
     it "creates the feature flags" do
       load_seeds
 
-      expect(Flipper.features.map(&:key)).to include("subscriptions", "newsletter", "maintenance_mode")
+      expect(Flipper.features.map(&:key)).to include("subscriptions", "newsletter", "maintenance_mode", "inventory")
     end
 
     it "creates the tasting note vocabulary" do

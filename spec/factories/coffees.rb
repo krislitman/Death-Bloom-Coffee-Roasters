@@ -9,9 +9,18 @@ FactoryBot.define do
     price_cents      { 1800 }
     active           { true }
     position         { 0 }
+    stock_quantity   { 100 }
 
     trait :inactive do
       active { false }
+    end
+
+    trait :out_of_stock do
+      stock_quantity { 0 }
+    end
+
+    trait :low_stock do
+      stock_quantity { 2 }
     end
 
     trait :light do

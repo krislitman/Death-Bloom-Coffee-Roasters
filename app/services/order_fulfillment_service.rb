@@ -19,11 +19,31 @@ class OrderFulfillmentService
 
   def fulfill_with_cart(cart)
     ActiveRecord::Base.transaction do
+      lock_coffees(cart)
       order = build_order
       build_order_items(order, cart)
+      flag_oversold(order, cart)
       cart.destroy!
       OrderMailer.confirmation(order).deliver_later
     end
+  end
+
+  def lock_coffees(cart)
+    return unless Flipper.enabled?(:inventory)
+
+    cart.cart_items.map(&:coffee).uniq.sort_by(&:id).each(&:lock!)
+  end
+
+  def flag_oversold(order, cart)
+    return unless Flipper.enabled?(:inventory)
+
+    shortfalls = cart.cart_items.map(&:coffee).uniq.select { |coffee| coffee.reload.available_stock.negative? }
+    return if shortfalls.empty?
+
+    order.update!(oversold: true)
+    Rails.logger.error(
+      "OrderFulfillmentService: order #{order.order_number} oversold #{shortfalls.map(&:name).join(', ')}"
+    )
   end
 
   def fulfill_without_cart
