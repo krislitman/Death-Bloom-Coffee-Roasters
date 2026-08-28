@@ -30,7 +30,7 @@ class Cart < ApplicationRecord
   end
 
   def total_cents
-    cart_items.sum { |item| item.total_cents }
+    cart_items.includes(:coffee).sum { |item| item.total_cents }
   end
 
   def item_count

@@ -43,7 +43,7 @@
       </div>
       <div class="cart-drawer__body">
         <div id="cart-items">
-          <% cart_items = current_cart.cart_items.includes(:coffee) %>
+          <% cart_items = cart_drawer_items %>
           <% if cart_items.any? %>
             <%= render partial: "cart_items/cart_item", collection: cart_items %>
           <% else %>

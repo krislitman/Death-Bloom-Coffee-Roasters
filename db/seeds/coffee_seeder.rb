@@ -8,8 +8,9 @@ def seed_coffee(attrs)
     c.processing  = attrs[:processing]
     c.description = attrs[:description]
     c.price_cents = attrs[:price_cents]
-    c.active      = true
-    c.position    = attrs[:position]
+    c.active         = true
+    c.position       = attrs[:position]
+    c.stock_quantity = attrs.fetch(:stock_quantity, 0)
   end
 
   notes.each do |note_name|

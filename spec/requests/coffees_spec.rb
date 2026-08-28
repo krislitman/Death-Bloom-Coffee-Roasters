@@ -27,6 +27,40 @@ RSpec.describe "Coffees", type: :request do
       expect(response.body).to include(cart_cart_items_path)
     end
 
+    context "when a coffee is sold out and the inventory flag is enabled" do
+      let!(:gone) { create(:coffee, :out_of_stock, name: "Depleted Lot") }
+
+      before { Flipper.enable(:inventory) }
+
+      it "marks the coffee as sold out" do
+        get coffees_path
+        expect(response.body).to include("Sold Out")
+      end
+
+      it "does not mark in-stock coffees as sold out" do
+        gone.destroy!
+        get coffees_path
+        expect(response.body).not_to include("Sold Out")
+      end
+
+      it "does not issue an extra query per additional coffee" do
+        get coffees_path
+        baseline = count_queries { get coffees_path }
+        create_list(:coffee, 4)
+
+        expect { get coffees_path }.to issue_queries(baseline)
+      end
+    end
+
+    context "when a coffee is sold out and the inventory flag is disabled" do
+      let!(:gone) { create(:coffee, :out_of_stock, name: "Depleted Lot") }
+
+      it "does not mark it sold out" do
+        get coffees_path
+        expect(response.body).not_to include("Sold Out")
+      end
+    end
+
     context "when filtering by roast level" do
       it "returns only coffees matching the roast level" do
         get coffees_path, params: { roast_level: "light" }

@@ -107,6 +107,66 @@ RSpec.describe OrderFulfillmentService do
       end
     end
 
+    context "when the inventory flag is enabled" do
+      before { Flipper.enable(:inventory) }
+
+      context "and stock covers the order" do
+        it "does not flag the order as oversold" do
+          coffee.update!(stock_quantity: 10)
+
+          described_class.new(checkout_session: stripe_session).call
+
+          expect(Order.last).not_to be_oversold
+        end
+      end
+
+      context "and stock ran out while the customer was paying" do
+        before { coffee.update!(stock_quantity: 1) }
+
+        it "still records the order" do
+          expect {
+            described_class.new(checkout_session: stripe_session).call
+          }.to change(Order, :count).by(1)
+        end
+
+        it "flags the order as oversold" do
+          described_class.new(checkout_session: stripe_session).call
+
+          expect(Order.last).to be_oversold
+        end
+
+        it "still records the order items" do
+          described_class.new(checkout_session: stripe_session).call
+
+          expect(Order.last.order_items.sum(:quantity)).to eq(2)
+        end
+
+        it "logs an error naming the coffee" do
+          allow(Rails.logger).to receive(:error)
+
+          described_class.new(checkout_session: stripe_session).call
+
+          expect(Rails.logger).to have_received(:error).with(/#{Regexp.escape(coffee.name)}/)
+        end
+
+        it "lets available stock go negative" do
+          described_class.new(checkout_session: stripe_session).call
+
+          expect(coffee.reload.available_stock).to eq(-1)
+        end
+      end
+    end
+
+    context "when the inventory flag is disabled" do
+      it "never flags the order as oversold" do
+        coffee.update!(stock_quantity: 0)
+
+        described_class.new(checkout_session: stripe_session).call
+
+        expect(Order.last).not_to be_oversold
+      end
+    end
+
     context "when fulfillment fails mid-transaction" do
       before do
         allow_any_instance_of(Order).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)

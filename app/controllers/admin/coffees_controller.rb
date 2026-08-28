@@ -2,7 +2,8 @@ class Admin::CoffeesController < Admin::BaseController
   before_action :set_coffee, only: [:edit, :update, :destroy]
 
   def index
-    @coffees = Coffee.ordered
+    @coffees = Coffee.ordered.to_a
+    Coffee.preload_sold_counts(@coffees)
   end
 
   def new
@@ -44,7 +45,7 @@ class Admin::CoffeesController < Admin::BaseController
   def coffee_params
     params.require(:coffee).permit(
       :name, :origin, :roast_level, :processing, :price, :description,
-      :active, :position, tasting_note_ids: []
+      :active, :position, :stock_quantity, tasting_note_ids: []
     )
   end
 end

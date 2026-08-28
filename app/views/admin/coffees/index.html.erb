@@ -20,6 +20,9 @@
             <th>Origin</th>
             <th>Roast</th>
             <th>Price</th>
+            <th>Stock</th>
+            <th>Sold</th>
+            <th>Available</th>
             <th>Active</th>
             <th>Position</th>
             <th></th>
@@ -32,6 +35,9 @@
               <td><%= coffee.origin %></td>
               <td><%= coffee.roast_level.humanize %></td>
               <td><%= coffee.formatted_price %></td>
+              <td><%= coffee.stock_quantity %></td>
+              <td><%= coffee.sold_count %></td>
+              <td class="<%= "text-db-accent" if coffee.sold_out? %>"><%= coffee.available_stock %></td>
               <td><%= coffee.active? ? "Yes" : "No" %></td>
               <td><%= coffee.position %></td>
               <td class="whitespace-nowrap">
