@@ -8,7 +8,5 @@ class CoffeesController < ApplicationController
 
   def show
     @coffee = Coffee.active.find_by!(slug: params[:slug])
-  rescue ActiveRecord::RecordNotFound
-    render file: Rails.public_path.join("404.html"), status: :not_found, layout: false
   end
 end
