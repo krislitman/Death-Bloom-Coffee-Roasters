@@ -27,6 +27,10 @@ RSpec.describe OrderMailer, type: :mailer do
       expect(mail.reply_to).to be_present
     end
 
+    it "inherits the configured from address" do
+      expect(mail.from).to eq([ ENV.fetch("MAIL_FROM", "deathbloomcoffeeroasters@proton.me") ])
+    end
+
     it "includes the order number in the subject" do
       expect(mail.subject).to include(order.order_number)
     end
